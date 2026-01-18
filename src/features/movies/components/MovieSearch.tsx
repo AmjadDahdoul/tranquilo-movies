@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useSearchMovies } from "../hooks/useSearchMovies";
+import { UpdateMovieButton } from "./UpdateMovieButton";
 
 export function MovieSearch() {
   const [query, setQuery] = useState("");
@@ -32,6 +33,16 @@ export function MovieSearch() {
             <p className="font-medium">{movie.title}</p>
 
             <p className="text-sm opacity-70">{movie.release_date}</p>
+            <UpdateMovieButton
+              movieId={movie.id}
+              action="add_item"
+              lable="Add to List"
+            />
+            <UpdateMovieButton
+              movieId={movie.id}
+              action="remove_item"
+              lable="Remove from List"
+            />
           </div>
         ))}
       </div>
