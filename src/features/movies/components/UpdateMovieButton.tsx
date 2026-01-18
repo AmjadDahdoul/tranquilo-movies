@@ -1,5 +1,6 @@
 import type { updateAction } from "@/services/tmdb/movies";
 import { useUpdateList } from "../hooks/useAddMovieToList";
+import { ENV } from "@/config/env";
 
 interface UpdateMovieButtonProps {
   movieId: number;
@@ -9,7 +10,7 @@ interface UpdateMovieButtonProps {
 
 export function UpdateMovieButton(props: UpdateMovieButtonProps) {
   const { movieId, action, lable } = props;
-  const LIST_ID = Number(import.meta.env.VITE_TMDB_STASH_LIST_ID);
+  const LIST_ID = ENV.STASH_LIST_ID;
 
   const { mutate, isPending } = useUpdateList(LIST_ID, action);
 
