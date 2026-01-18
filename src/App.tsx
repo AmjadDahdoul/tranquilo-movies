@@ -1,9 +1,9 @@
+import { ThemeProvider } from "./components/theme-provider";
+
 export function App() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="font-medium">Hello World</div>
-    </div>
-  )
+    return <ThemeProvider>
+        <></>
+    </ThemeProvider>;
 }
 
-export default App
+export default App;
