@@ -3,6 +3,7 @@ import { tmdbEndpoints } from "./endpoints";
 import type {
   Movie,
   MovieListResponse,
+  TmdbItemStatusResponse,
   TmdbListDetails,
   TmdbWatchlistMoviesResponse,
 } from "./types";
@@ -42,5 +43,10 @@ export const moviesApi = {
           media_id: movieId,
         }),
       },
+    ),
+
+  checkMovieStatus: (listId: number, movieId: number) =>
+    tmdbClient<TmdbItemStatusResponse>(
+      tmdbEndpoints.checkItemStatus(listId, movieId),
     ),
 };

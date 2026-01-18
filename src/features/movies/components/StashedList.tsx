@@ -14,11 +14,7 @@ export const StashedList = () => {
       {data?.items.map((movie) => (
         <div key={movie.id}>
           <img src={getPosterUrl(movie.poster_path)} alt={movie.title} />
-          <UpdateMovieButton
-            action="remove_item"
-            movieId={movie.id}
-            lable="Remove"
-          />
+          <UpdateMovieButton movieId={movie.id} />
         </div>
       ))}
     </div>

@@ -33,16 +33,7 @@ export function MovieSearch() {
             <p className="font-medium">{movie.title}</p>
 
             <p className="text-sm opacity-70">{movie.release_date}</p>
-            <UpdateMovieButton
-              movieId={movie.id}
-              action="add_item"
-              lable="Add to List"
-            />
-            <UpdateMovieButton
-              movieId={movie.id}
-              action="remove_item"
-              lable="Remove from List"
-            />
+            <UpdateMovieButton movieId={movie.id} />
           </div>
         ))}
       </div>

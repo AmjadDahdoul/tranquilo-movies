@@ -78,3 +78,9 @@ export type TmdbWatchlistMovie = {
   vote_average: number;
   vote_count: number;
 };
+
+// ---
+export type TmdbItemStatusResponse = {
+  id: number;
+  item_present: boolean;
+};

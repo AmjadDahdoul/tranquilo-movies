@@ -12,6 +12,10 @@ export function useUpdateList(listId: number, action: updateAction) {
       queryClient.invalidateQueries({
         queryKey: ["stashed-movies", listId],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["item-status", listId],
+      });
     },
   });
 }
