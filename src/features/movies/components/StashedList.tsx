@@ -1,22 +1,17 @@
-import { getPosterUrl } from "@/services/tmdb/utils";
 import { useStachedMovies } from "../hooks/useStashListMovies";
-import { UpdateMovieButton } from "./UpdateMovieButton";
+import { MoviesContainer } from "./MoviesContaniner";
 
 export const StashedList = () => {
   const { data, isLoading, isError } = useStachedMovies();
 
   if (isLoading) return <>Loading...</>;
   if (isError) return <>Error!</>;
-  if (data?.total_results === 0) return <>Empty..</>;
+
+  if (!data) return;
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      {data?.items.map((movie) => (
-        <div key={movie.id}>
-          <img src={getPosterUrl(movie.poster_path)} alt={movie.title} />
-          <UpdateMovieButton movieId={movie.id} />
-        </div>
-      ))}
+    <div className="border-b-2 border-gray-500 mb-4">
+      <MoviesContainer movies={data} />
     </div>
   );
 };

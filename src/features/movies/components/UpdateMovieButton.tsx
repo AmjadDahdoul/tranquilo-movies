@@ -22,7 +22,11 @@ export function UpdateMovieButton(props: UpdateMovieButtonProps) {
   const { mutate, isPending } = useUpdateList(LIST_ID, movieInList);
 
   return (
-    <button onClick={() => mutate(movieId)} disabled={isPending}>
+    <button
+      onClick={() => mutate(movieId)}
+      disabled={isPending}
+      className="rounded-lg bg-primary p-2 cursor-pointer"
+    >
       {isPending
         ? data?.item_present
           ? "Removing..."

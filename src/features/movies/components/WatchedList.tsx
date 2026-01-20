@@ -1,19 +1,17 @@
-import { getPosterUrl } from "@/services/tmdb/utils";
 import { useWatchedMovies } from "../hooks/useWatchedMovies";
+import { MoviesContainer } from "./MoviesContaniner";
 
 export const WatchedList = () => {
   const { data, isLoading, isError } = useWatchedMovies();
 
   if (isLoading) return <>Loading...</>;
   if (isError) return <>Error!</>;
+  if (!data) return;
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      {data?.items.map((movie) => (
-        <div key={movie.id}>
-          <img src={getPosterUrl(movie.poster_path)} alt={movie.title} />
-        </div>
-      ))}
+    // remove border-b
+    <div className="border-b-2 border-gray-500 mb-4">
+      <MoviesContainer movies={data} />
     </div>
   );
 };
