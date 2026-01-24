@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useSearchMovies } from "../hooks/useSearchMovies";
-import { UpdateMovieButton } from "./UpdateMovieButton";
+import { MoviesContainer } from "./MoviesContainer";
 
 export function MovieSearch() {
   const [query, setQuery] = useState("");
   const debounced = useDebouncedValue(query);
 
   const { data, isLoading, isError } = useSearchMovies(debounced);
+
+  if (!data) return;
 
   return (
     <div className="space-y-4">
@@ -21,22 +23,7 @@ export function MovieSearch() {
       {isLoading && <p>Searching...</p>}
       {isError && <p>Error while searching</p>}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {data?.results.map((movie) => (
-          <div key={movie.id} className="space-y-2">
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              className="rounded"
-            />
-
-            <p className="font-medium">{movie.title}</p>
-
-            <p className="text-sm opacity-70">{movie.release_date}</p>
-            <UpdateMovieButton movieId={movie.id} />
-          </div>
-        ))}
-      </div>
+      <MoviesContainer movies={data?.results} />
     </div>
   );
 }

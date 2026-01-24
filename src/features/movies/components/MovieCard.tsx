@@ -1,12 +1,17 @@
-import type { TmdbListItem, TmdbWatchlistMovie } from "@/services/tmdb/types";
+import type {
+  Movie,
+  TmdbListItem,
+  TmdbWatchlistMovie,
+} from "@/services/tmdb/types";
 import { getPosterUrl } from "@/services/tmdb/utils";
 import { UpdateMovieButton } from "./UpdateMovieButton";
 
 interface MovieCard {
-  movie: TmdbListItem | TmdbWatchlistMovie;
+  movie: TmdbListItem | TmdbWatchlistMovie | Movie;
+  listType?: string;
 }
 export const MovieCard = (props: MovieCard) => {
-  const { movie } = props;
+  const { movie, listType } = props;
   const {
     id,
     title,
@@ -29,7 +34,7 @@ export const MovieCard = (props: MovieCard) => {
       <div className="group-hover:block hidden absolute bottom-0 bg-black/70 w-full h-full p-5">
         <h1>{title}</h1>
         <h1>{vote_average}</h1>
-        <UpdateMovieButton movieId={id} />
+        <UpdateMovieButton movieId={id} listType={listType} />
       </div>
     </div>
   );

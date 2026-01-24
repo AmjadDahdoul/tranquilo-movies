@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { moviesApi, type updateAction } from "@/services/tmdb/movies";
 
-export function useUpdateList(listId: number, action: updateAction) {
+export function useUpdateList(
+  listId: number,
+  action: updateAction,
+  listType?: string,
+) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -10,7 +14,7 @@ export function useUpdateList(listId: number, action: updateAction) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["stashed-movies", listId],
+        queryKey: [listType, listId],
       });
 
       queryClient.invalidateQueries({

@@ -1,9 +1,11 @@
-import type { TmdbListDetails } from "@/services/tmdb/types";
+import type { Movie, TmdbListItem } from "@/services/tmdb/types";
 import { MovieCard } from "./MovieCard";
 import { Container } from "@/components/ui/container";
+import { ListType } from "@/routes/enum/ListType";
 
 interface MoviesContainerProps {
-  movies: TmdbListDetails;
+  movies: TmdbListItem[] | Movie[];
+  listType?: string;
 }
 
 export const MoviesContainer = (props: MoviesContainerProps) => {
@@ -12,8 +14,12 @@ export const MoviesContainer = (props: MoviesContainerProps) => {
   return (
     <Container>
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 my-6">
-        {movies?.items.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+        {movies?.map((movie) => (
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            listType={ListType.WATCHLIST}
+          />
         ))}
       </div>
     </Container>

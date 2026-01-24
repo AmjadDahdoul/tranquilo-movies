@@ -1,6 +1,6 @@
-import { Container } from "@/components/ui/container";
 import { useWatchList } from "../hooks/useWatchList";
-import { MovieCard } from "./MovieCard";
+import { ListType } from "@/routes/enum/ListType";
+import { MoviesContainer } from "./MoviesContainer";
 
 export const Watchlist = () => {
   const { data: movies, isLoading, isError } = useWatchList();
@@ -8,13 +8,9 @@ export const Watchlist = () => {
   if (isLoading) return <>Loading...</>;
   if (isError) return <>Error!</>;
 
+  if (!movies) return;
+
   return (
-    <Container>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 my-6">
-        {movies?.results.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
-    </Container>
+    <MoviesContainer movies={movies.results} listType={ListType.WATCHLIST} />
   );
 };

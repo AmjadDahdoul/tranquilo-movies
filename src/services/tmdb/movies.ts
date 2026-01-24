@@ -3,6 +3,8 @@ import { tmdbEndpoints } from "./endpoints";
 import type {
   Movie,
   MovieListResponse,
+  TmdbAddToWatchlistBody,
+  TmdbAddToWatchlistResponse,
   TmdbItemStatusResponse,
   TmdbListDetails,
   TmdbWatchlistMoviesResponse,
@@ -33,6 +35,15 @@ export const moviesApi = {
 
   watchList: (accountId: number) =>
     tmdbClient<TmdbWatchlistMoviesResponse>(tmdbEndpoints.watchList(accountId)),
+
+  updateWatchlist: (accountId: number, body: TmdbAddToWatchlistBody) =>
+    tmdbClient<TmdbAddToWatchlistResponse>(
+      tmdbEndpoints.updateWatchlist(accountId),
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      },
+    ),
 
   updateList: (listId: number, movieId: number, action: updateAction) =>
     tmdbClient<{ status_code: number; status_message: string }>(

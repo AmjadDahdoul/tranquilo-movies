@@ -84,3 +84,16 @@ export type TmdbItemStatusResponse = {
   id: number;
   item_present: boolean;
 };
+
+// ---
+export interface TmdbAddToWatchlistBody {
+  media_type: "movie" | "tv";
+  media_id: number;
+  watchlist: boolean;
+}
+
+export interface TmdbAddToWatchlistResponse {
+  status_code: number;
+  status_message: string;
+  success: boolean;
+}

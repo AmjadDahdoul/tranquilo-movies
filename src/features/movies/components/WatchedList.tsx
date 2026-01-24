@@ -1,5 +1,5 @@
 import { useWatchedMovies } from "../hooks/useWatchedMovies";
-import { MoviesContainer } from "./MoviesContaniner";
+import { MoviesContainer } from "./MoviesContainer";
 
 export const WatchedList = () => {
   const { data, isLoading, isError } = useWatchedMovies();
@@ -11,7 +11,7 @@ export const WatchedList = () => {
   return (
     // remove border-b
     <div className="border-b-2 border-gray-500 mb-4">
-      <MoviesContainer movies={data} />
+      <MoviesContainer movies={data.items} />
     </div>
   );
 };
