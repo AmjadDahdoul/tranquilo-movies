@@ -51,9 +51,7 @@ export const Watchlist = () => {
         className="flex items-center justify-between cursor-pointer mb-4"
         onClick={handleOnClick}
       >
-        <h2 className="text-2xl font-bold">
-          Watchlist {movieCount > 0 && `(${movieCount})`}
-        </h2>
+        <h2 className="text-2xl font-bold">Watchlist {`(${movieCount})`}</h2>
         <span className="text-2xl select-none">{isCollapsed ? "▶" : "▼"}</span>
       </div>
 
@@ -66,10 +64,13 @@ export const Watchlist = () => {
               </p>
             </div>
           ) : (
-            <MoviesContainer
-              movies={movies.results}
-              listType={ListType.WATCHLIST}
-            />
+            <>
+              <MoviesContainer
+                movies={movies.results}
+                listType={ListType.WATCHLIST}
+              />
+              <div className="border-b-2 border-accent" />
+            </>
           )}
         </div>
       )}

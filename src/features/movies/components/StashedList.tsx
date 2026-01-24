@@ -51,9 +51,7 @@ export const StashedList = () => {
         className="flex items-center justify-between cursor-pointer mb-4"
         onClick={handleOnClick}
       >
-        <h2 className="text-2xl font-bold">
-          Stash List {movieCount > 0 && `(${movieCount})`}
-        </h2>
+        <h2 className="text-2xl font-bold">Stash List {`(${movieCount})`}</h2>
         <span className="text-2xl select-none">{isCollapsed ? "▶" : "▼"}</span>
       </div>
 
@@ -66,10 +64,13 @@ export const StashedList = () => {
               </p>
             </div>
           ) : (
-            <MoviesContainer
-              movies={data.items}
-              listType={ListType.STASHLIST}
-            />
+            <>
+              <MoviesContainer
+                movies={data.items}
+                listType={ListType.STASHLIST}
+              />
+              <div className="border-b-2 border-accent" />
+            </>
           )}
         </div>
       )}
