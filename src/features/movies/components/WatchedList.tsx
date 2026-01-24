@@ -10,9 +10,6 @@ export const WatchedList = () => {
   if (!data) return;
 
   return (
-    // remove border-b
-    <div className="border-b-2 border-gray-500 mb-4">
-      <MoviesContainer movies={data.items} listType={ListType.WATCHLIST} />
-    </div>
+    <MoviesContainer movies={data.items} listType={ListType.WATCHEDLIST} />
   );
 };
