@@ -26,7 +26,6 @@ export const MovieCard = (props: MovieCard) => {
     // vote_count,
     // release_date,
     // popularity,
-    // genre_ids,
     // backdrop_path
   } = movie;
 
