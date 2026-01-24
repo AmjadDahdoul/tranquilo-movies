@@ -23,6 +23,10 @@ export function useAddToWatchlist() {
       queryClient.invalidateQueries({
         queryKey: [ListType.WATCHLIST, ENV.ACCOUNT_ID],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["watchlist-status"],
+      });
     },
   });
 }

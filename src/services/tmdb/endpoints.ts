@@ -7,4 +7,5 @@ export const tmdbEndpoints = {
   checkItemStatus: (listId: number, movieId: number) =>
     `/list/${listId}/item_status?movie_id=${movieId}`,
   updateWatchlist: (accountId: number) => `/account/${accountId}/watchlist`,
+  accountStatus: (movieId: number) => `/movie/${movieId}/account_states'`,
 };

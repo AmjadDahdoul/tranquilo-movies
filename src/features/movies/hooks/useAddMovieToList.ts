@@ -20,6 +20,10 @@ export function useUpdateList(
       queryClient.invalidateQueries({
         queryKey: ["item-status", listId],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["watchlist-status"],
+      });
     },
   });
 }

@@ -97,3 +97,16 @@ export interface TmdbAddToWatchlistResponse {
   status_message: string;
   success: boolean;
 }
+
+// ---
+
+export type TmdbAccountStatesResponse = {
+  id: number;
+  favorite: boolean;
+  watchlist: boolean;
+  rated:
+    | boolean
+    | {
+        value: number;
+      };
+};

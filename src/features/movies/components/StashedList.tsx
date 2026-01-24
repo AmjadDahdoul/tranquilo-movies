@@ -10,9 +10,5 @@ export const StashedList = () => {
 
   if (!data) return;
 
-  return (
-    <div className="border-b-2 border-gray-500 mb-4">
-      <MoviesContainer movies={data.items} listType={ListType.STASHLIST} />
-    </div>
-  );
+  return <MoviesContainer movies={data.items} listType={ListType.STASHLIST} />;
 };
