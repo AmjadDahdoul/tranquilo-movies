@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { Search, X, Film } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 
@@ -8,30 +9,44 @@ export const Navbar = () => {
 
   const handleSearchChange = (value: string) => {
     if (value) {
-      setSearchParams({ search: value });
+      setSearchParams({ search: value }, { replace: true });
     } else {
       setSearchParams({});
     }
   };
 
   return (
-    <div className="border-b-2 rounded-b-md">
+    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
       <Container>
-        <div className="flex justify-between items-center gap-4">
-          <div className="h-14 flex items-center font-bold text-xl">
-            Tranquilo Movies
+        <div className="flex h-16 items-center gap-4">
+          <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
+            <Film className="h-6 w-6 text-primary" />
+            <span className="hidden sm:block">Tranquilo Movies</span>
           </div>
-          <div className="flex-1 max-w-md">
+
+          <div className="relative flex-1 max-w-lg mx-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-xl border bg-background px-10 py-2 text-sm shadow-sm transition focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Search movies"
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchParams({}, { replace: true })}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground hover:bg-muted"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
-          <ModeToggle />
+
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+          </div>
         </div>
       </Container>
-    </div>
+    </header>
   );
 };
