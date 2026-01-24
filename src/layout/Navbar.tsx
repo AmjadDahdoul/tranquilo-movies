@@ -15,7 +15,7 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="border-b-2 border-gray-100 rounded-3xl">
+    <div className="border-b-2 rounded-b-md">
       <Container>
         <div className="flex justify-between items-center gap-4">
           <div className="h-14 flex items-center font-bold text-xl">
