@@ -31,6 +31,11 @@ export const moviesApi = {
   watchedMovies: (listId: number) =>
     tmdbClient<TmdbListDetails>(tmdbEndpoints.watchedMovies(listId)),
 
+  watchedMoviesPaginated: (listId: number, page: number = 1) =>
+    tmdbClient<TmdbListDetails>(
+      tmdbEndpoints.watchedMoviesPaginated(listId, page),
+    ),
+
   stashedMovies: (listId: number) =>
     tmdbClient<TmdbListDetails>(tmdbEndpoints.stashedMovies(listId)),
 

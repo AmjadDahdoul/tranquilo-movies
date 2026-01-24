@@ -29,10 +29,7 @@ export function App() {
 
               <Watchlist />
 
-              <div className="my-6">
-                <h2 className="text-2xl font-bold mb-4">Watched Movies</h2>
-                <WatchedList />
-              </div>
+              <WatchedList />
             </Container>
           </>
         )}
