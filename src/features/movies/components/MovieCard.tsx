@@ -33,7 +33,7 @@ export const MovieCard = (props: MovieCard) => {
   return (
     <div className="rounded-2xl border-2 overflow-hidden group hover:scale-110 duration-700 ease-in-out relative cursor-pointer">
       <img src={getPosterUrl(poster_path)} alt={title} />
-      <div className="group-hover:block hidden absolute bottom-0 bg-black/70 w-full h-full p-5">
+      <div className="group-hover:flex hidden absolute bottom-0 bg-black/70 w-full h-full p-2 flex-col justify-end">
         <h1 className="text-white font-bold text-lg mb-2">{title}</h1>
         <h2 className="text-yellow-400 font-semibold mb-4">
           ⭐ {vote_average.toPrecision(2)}

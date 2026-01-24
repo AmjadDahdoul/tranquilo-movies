@@ -7,6 +7,7 @@ import { useMoveMovie } from "../hooks/useMoveMovie";
 import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
+import { Button } from "@/components/ui/button";
 
 interface MovieActionsProps {
   movieId: number;
@@ -61,21 +62,23 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     return (
       <div className="flex flex-col gap-2">
         {!isInWatchlist && (
-          <button
+          <Button
             onClick={handleMoveToWatchlist}
             disabled={isMoving || removeStashPending}
-            className="rounded-lg bg-blue-600 hover:bg-blue-700 p-2 cursor-pointer text-white text-sm disabled:opacity-50"
+            variant="default"
+            size="default"
           >
             {isMoving || removeStashPending ? "Moving..." : "Move to Watchlist"}
-          </button>
+          </Button>
         )}
-        <button
+        <Button
           onClick={handleRemoveFromStashList}
           disabled={removeStashPending}
-          className="rounded-lg bg-red-600 hover:bg-red-700 p-2 cursor-pointer text-white text-sm disabled:opacity-50"
+          variant="destructive"
+          size="default"
         >
           {removeStashPending ? "Removing..." : "Remove from Stash"}
-        </button>
+        </Button>
       </div>
     );
   }
@@ -84,21 +87,23 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     return (
       <div className="flex flex-col gap-2">
         {!isInStashList && (
-          <button
+          <Button
             onClick={handleMoveToStashList}
             disabled={isMoving || watchlistPending}
-            className="rounded-lg bg-orange-600 hover:bg-orange-700 p-2 cursor-pointer text-white text-sm disabled:opacity-50"
+            variant="secondary"
+            size="default"
           >
             {isMoving || watchlistPending ? "Moving..." : "Move to Stash"}
-          </button>
+          </Button>
         )}
-        <button
+        <Button
           onClick={handleRemoveFromWatchlist}
           disabled={watchlistPending}
-          className="rounded-lg bg-red-600 hover:bg-red-700 p-2 cursor-pointer text-white text-sm disabled:opacity-50"
+          variant="destructive"
+          size="default"
         >
           {watchlistPending ? "Removing..." : "Remove from Watchlist"}
-        </button>
+        </Button>
       </div>
     );
   }
