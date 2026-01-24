@@ -5,6 +5,7 @@ import { useWatchlistStatus } from "../hooks/useWatchlistStatus";
 import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
+import { Button } from "@/components/ui/button";
 
 interface SearchMovieActionsProps {
   movieId: number;
@@ -44,22 +45,24 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
   return (
     <div className="flex flex-col gap-2">
       {!isInWatchlist && (
-        <button
+        <Button
           onClick={handleAddToWatchlist}
           disabled={watchlistPending}
-          className="rounded-lg bg-blue-600 hover:bg-blue-700 p-2 cursor-pointer text-white text-sm disabled:opacity-50"
+          variant="default"
+          size="default"
         >
           {watchlistPending ? "Adding..." : "Add to Watchlist"}
-        </button>
+        </Button>
       )}
       {!isInStashList && (
-        <button
+        <Button
           onClick={handleAddToStashList}
           disabled={addStashPending}
-          className="rounded-lg bg-orange-600 hover:bg-orange-700 p-2 cursor-pointer text-white text-sm disabled:opacity-50"
+          variant="secondary"
+          size="default"
         >
           {addStashPending ? "Adding..." : "Add to Stash"}
-        </button>
+        </Button>
       )}
     </div>
   );
