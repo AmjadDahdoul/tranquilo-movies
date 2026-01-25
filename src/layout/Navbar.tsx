@@ -3,6 +3,7 @@ import { Search, X, Film } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { useRef } from "react";
+import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
 
 const LINKS = [
   "https://youtu.be/aQkPcPqTq4M?si=hFlYn7SoWjDvb1TE", // MACINTOSH PLUS - リサフランク420 / 現代のコンピュ
@@ -39,6 +40,8 @@ export const Navbar = () => {
     }
   };
 
+  const words = ["Movies", "Bovies", "أفلام", "Filme"];
+
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
       <Container>
@@ -49,7 +52,7 @@ export const Navbar = () => {
               onClick={handleLogoClick}
             />
             <span className="hidden sm:block select-none hover:animate-pulse">
-              Tranquilo Movies
+              <LayoutTextFlip text="Tranquilo" words={words} duration={2500} />
             </span>
           </div>
 
