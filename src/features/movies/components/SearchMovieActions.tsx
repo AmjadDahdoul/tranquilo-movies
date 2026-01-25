@@ -1,4 +1,4 @@
-import { BookmarkPlus, FolderPlus, Loader2 } from "lucide-react";
+import { BookmarkPlus, FolderPlus, Loader2, Trash2 } from "lucide-react";
 
 import { useAddToWatchlist } from "../hooks/useAddToWatchlist";
 import { useUpdateList } from "../hooks/useAddMovieToList";
@@ -23,70 +23,85 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
   const { data: stashListStatus } = useItemStatus(ENV.STASH_LIST_ID, movieId);
   const { data: watchlistStatus } = useWatchlistStatus(movieId);
 
-  const { mutate: updateWatchlist, isPending: watchlistPending } =
-    useAddToWatchlist();
-
-  const { mutate: addToStashList, isPending: addStashPending } = useUpdateList(
-    ENV.STASH_LIST_ID,
-    ActionType.ADD,
-    ListType.STASHLIST,
-  );
-
   const isInStashList = stashListStatus?.item_present;
   const isInWatchlist = watchlistStatus?.watchlist;
 
-  if (isInStashList && isInWatchlist) {
-    return (
-      <div className="p-2 text-center text-sm text-green-400">
-        Already in both lists
-      </div>
-    );
-  }
+  const { mutate: updateWatchlist, isPending: watchlistPending } =
+    useAddToWatchlist();
+
+  const { mutate: updateStashList, isPending: addStashPending } = useUpdateList(
+    ENV.STASH_LIST_ID,
+    !isInStashList ? ActionType.ADD : ActionType.REMOVE,
+    ListType.STASHLIST,
+  );
+
+  const handleToggleWatchlist = () => {
+    updateWatchlist({
+      movieId,
+      watchlist: !isInWatchlist,
+    });
+  };
+
+  const handleToggleStashList = () => {
+    updateStashList(movieId);
+  };
 
   return (
     <TooltipProvider delayDuration={150}>
       <div className="flex items-center justify-center gap-2">
-        {!isInWatchlist && (
-          <Tooltip delayDuration={300}>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="default"
-                onClick={() => updateWatchlist({ movieId, watchlist: true })}
-                disabled={watchlistPending}
-                aria-label="Add to watchlist"
-              >
-                {watchlistPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <BookmarkPlus className="h-4 w-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Add to Watchlist</TooltipContent>
-          </Tooltip>
-        )}
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              variant={!isInWatchlist ? "default" : "destructive"}
+              onClick={handleToggleWatchlist}
+              disabled={watchlistPending}
+              aria-label="Add to watchlist"
+            >
+              {watchlistPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  {!isInWatchlist ? (
+                    <BookmarkPlus className="h-4 w-4" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {!isInWatchlist ? "Add to Watchlist" : "Remove from Watchlist"}
+          </TooltipContent>
+        </Tooltip>
 
-        {!isInStashList && (
-          <Tooltip delayDuration={300}>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="secondary"
-                onClick={() => addToStashList(movieId)}
-                disabled={addStashPending}
-                aria-label="Add to stash"
-              >
-                {addStashPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <FolderPlus className="h-4 w-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Add to Stash</TooltipContent>
-          </Tooltip>
-        )}
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              variant={!isInStashList ? "secondary" : "destructive"}
+              onClick={handleToggleStashList}
+              disabled={addStashPending}
+              aria-label="Add to stash"
+            >
+              {addStashPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  {!isInStashList ? (
+                    <FolderPlus className="h-4 w-4" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {!isInStashList ? "Add to Stash" : "Remove from Stash"}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </TooltipProvider>
   );
