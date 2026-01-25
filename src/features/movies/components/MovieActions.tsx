@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { BookmarkPlus, FolderPlus, Trash2, Loader2 } from "lucide-react";
+
 import { useAddToWatchlist } from "../hooks/useAddToWatchlist";
 import { useUpdateList } from "../hooks/useAddMovieToList";
 import { useItemStatus } from "../hooks/useItemStatus";
@@ -8,6 +10,12 @@ import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MovieActionsProps {
   movieId: number;
@@ -16,10 +24,13 @@ interface MovieActionsProps {
 
 export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
   const [isMoving, setIsMoving] = useState(false);
+
   const { data: stashListStatus } = useItemStatus(ENV.STASH_LIST_ID, movieId);
   const { data: watchlistStatus } = useWatchlistStatus(movieId);
+
   const { mutate: updateWatchlist, isPending: watchlistPending } =
     useAddToWatchlist();
+
   const { moveToWatchlist, moveToStashList } = useMoveMovie();
 
   const { mutate: removeFromStashList, isPending: removeStashPending } =
@@ -32,8 +43,6 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     setIsMoving(true);
     try {
       await moveToWatchlist(movieId, isInStashList || false);
-    } catch (error) {
-      console.error("Error moving to watchlist:", error);
     } finally {
       setIsMoving(false);
     }
@@ -43,70 +52,102 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     setIsMoving(true);
     try {
       await moveToStashList(movieId);
-    } catch (error) {
-      console.error("Error moving to stash list:", error);
     } finally {
       setIsMoving(false);
     }
   };
 
-  const handleRemoveFromStashList = () => {
-    removeFromStashList(movieId);
-  };
+  return (
+    <TooltipProvider delayDuration={150}>
+      <div className="flex items-center gap-2">
+        {listType === ListType.STASHLIST && (
+          <>
+            {!isInWatchlist && (
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    onClick={handleMoveToWatchlist}
+                    disabled={isMoving || removeStashPending}
+                    aria-label="Move to watchlist"
+                  >
+                    {isMoving ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <BookmarkPlus className="h-4 w-4" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Move to Watchlist</TooltipContent>
+              </Tooltip>
+            )}
 
-  const handleRemoveFromWatchlist = () => {
-    updateWatchlist({ movieId, watchlist: false });
-  };
-
-  if (listType === ListType.STASHLIST) {
-    return (
-      <div className="flex flex-col gap-2">
-        {!isInWatchlist && (
-          <Button
-            onClick={handleMoveToWatchlist}
-            disabled={isMoving || removeStashPending}
-            variant="default"
-            size="default"
-          >
-            {isMoving || removeStashPending ? "Moving..." : "Move to Watchlist"}
-          </Button>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  onClick={() => removeFromStashList(movieId)}
+                  disabled={removeStashPending}
+                  aria-label="Remove from stash"
+                >
+                  {removeStashPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Remove from Stash</TooltipContent>
+            </Tooltip>
+          </>
         )}
-        <Button
-          onClick={handleRemoveFromStashList}
-          disabled={removeStashPending}
-          variant="destructive"
-          size="default"
-        >
-          {removeStashPending ? "Removing..." : "Remove from Stash"}
-        </Button>
-      </div>
-    );
-  }
 
-  if (listType === ListType.WATCHLIST) {
-    return (
-      <div className="flex flex-col gap-2">
-        {!isInStashList && (
-          <Button
-            onClick={handleMoveToStashList}
-            disabled={isMoving || watchlistPending}
-            variant="secondary"
-            size="default"
-          >
-            {isMoving || watchlistPending ? "Moving..." : "Move to Stash"}
-          </Button>
+        {listType === ListType.WATCHLIST && (
+          <>
+            {!isInStashList && (
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    onClick={handleMoveToStashList}
+                    disabled={isMoving || watchlistPending}
+                    aria-label="Move to stash"
+                  >
+                    {isMoving ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <FolderPlus className="h-4 w-4" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Move to Stash</TooltipContent>
+              </Tooltip>
+            )}
+
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  onClick={() => updateWatchlist({ movieId, watchlist: false })}
+                  disabled={watchlistPending}
+                  aria-label="Remove from watchlist"
+                >
+                  {watchlistPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Remove from Watchlist</TooltipContent>
+            </Tooltip>
+          </>
         )}
-        <Button
-          onClick={handleRemoveFromWatchlist}
-          disabled={watchlistPending}
-          variant="destructive"
-          size="default"
-        >
-          {watchlistPending ? "Removing..." : "Remove from Watchlist"}
-        </Button>
       </div>
-    );
-  }
-
-  return null;
+    </TooltipProvider>
+  );
 };
