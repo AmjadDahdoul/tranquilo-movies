@@ -2,6 +2,16 @@ import { useSearchParams } from "react-router-dom";
 import { Search, X, Film } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { useRef } from "react";
+
+const LINKS = [
+  "https://youtu.be/aQkPcPqTq4M?si=hFlYn7SoWjDvb1TE", // MACINTOSH PLUS - リサフランク420 / 現代のコンピュ
+  "https://youtu.be/gQtKJbptcns?si=5602Ydu2OeJVP3fi", // Rapp Snitch Knishes
+  "https://youtu.be/MPlkHxFA-Qg?si=ZtykX4rrnhxsVrAc", // Ludovico Einaudi – Una Mattina
+  "https://youtu.be/88sARuFu-tc?si=kNf42iBM3OxHTOih", // Bronski Beat - Smalltown Boy
+  "https://youtu.be/Uj1AOKUPYTY?si=B_ED6bbBklaLHbLk", //Angus and Julia Stone - I'm Not Yours
+  "https://youtu.be/tD5oQQ-CQ4E?si=cN_8JVvPaxAMijhm", // Hailie's Song · Eminem
+] as const;
 
 export const Navbar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,13 +25,32 @@ export const Navbar = () => {
     }
   };
 
+  const logoClickCount = useRef<number>(
+    Number(localStorage.getItem("logoClickCount")) || 0,
+  );
+
+  const handleLogoClick = () => {
+    logoClickCount.current += 1;
+    localStorage.setItem("logoClickCount", logoClickCount.current.toString());
+
+    if (logoClickCount.current % 5 === 0) {
+      const randomIndex = Math.floor(Math.random() * LINKS.length);
+      window.open(LINKS[randomIndex], "_blank");
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
       <Container>
         <div className="flex h-16 items-center gap-4">
           <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <Film className="h-6 w-6 text-primary" />
-            <span className="hidden sm:block">Tranquilo Movies</span>
+            <Film
+              className="h-6 w-6 text-primary active:scale-125 duration-200 ease-in-out hover:animate-spin"
+              onClick={handleLogoClick}
+            />
+            <span className="hidden sm:block select-none hover:animate-pulse">
+              Tranquilo Movies
+            </span>
           </div>
 
           <div className="relative flex-1 max-w-lg mx-auto">
