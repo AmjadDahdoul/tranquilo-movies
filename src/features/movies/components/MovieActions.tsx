@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { BookmarkPlus, FolderPlus, Trash2, Loader2 } from "lucide-react";
+import { BookmarkPlus, FolderPlus, Trash2, Loader2, Check } from "lucide-react";
 
 import { useAddToWatchlist } from "../hooks/useAddToWatchlist";
 import { useUpdateList } from "../hooks/useAddMovieToList";
 import { useItemStatus } from "../hooks/useItemStatus";
 import { useWatchlistStatus } from "../hooks/useWatchlistStatus";
 import { useMoveMovie } from "../hooks/useMoveMovie";
+import { useAddToWatchedList } from "../hooks/useAddToWatchedList";
 import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
@@ -36,6 +37,9 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
   const { mutate: removeFromStashList, isPending: removeStashPending } =
     useUpdateList(ENV.STASH_LIST_ID, ActionType.REMOVE, ListType.STASHLIST);
 
+  const { mutate: addToWatchedList, isPending: addToWatchedPending } =
+    useAddToWatchedList();
+
   const isInStashList = stashListStatus?.item_present;
   const isInWatchlist = watchlistStatus?.watchlist;
 
@@ -62,6 +66,24 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
       <div className="flex items-center gap-2">
         {listType === ListType.STASHLIST && (
           <>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="default"
+                  onClick={() => addToWatchedList(movieId)}
+                  disabled={addToWatchedPending}
+                  aria-label="Mark as watched"
+                >
+                  {addToWatchedPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Mark as Watched</TooltipContent>
+            </Tooltip>
             {!isInWatchlist && (
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
@@ -106,6 +128,24 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
 
         {listType === ListType.WATCHLIST && (
           <>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="default"
+                  onClick={() => addToWatchedList(movieId)}
+                  disabled={addToWatchedPending}
+                  aria-label="Mark as watched"
+                >
+                  {addToWatchedPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Mark as Watched</TooltipContent>
+            </Tooltip>
             {!isInStashList && (
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
