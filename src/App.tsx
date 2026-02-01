@@ -25,9 +25,9 @@ export function App() {
         ) : (
           <>
             <Container>
-              <StashedList />
-
               <Watchlist />
+
+              <StashedList />
 
               <WatchedList />
             </Container>
