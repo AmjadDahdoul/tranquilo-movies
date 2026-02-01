@@ -1,5 +1,6 @@
 import { getPosterUrl } from "@/services/tmdb/utils";
 import { useMovieDetails } from "../hooks/useMovieDetails";
+import { useEffect } from "react";
 
 interface MovieCardDetailsProps {
   movieId: number;
@@ -8,6 +9,20 @@ interface MovieCardDetailsProps {
 
 export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
   const { data, isLoading } = useMovieDetails(movieId);
+
+  // prevent scroll when modal is open -- TODO: check if there is a better way to do this
+  useEffect(() => {
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    };
+  }, []);
 
   if (isLoading) {
     return (
