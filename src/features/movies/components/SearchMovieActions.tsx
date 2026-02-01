@@ -35,14 +35,16 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
     ListType.STASHLIST,
   );
 
-  const handleToggleWatchlist = () => {
+  const handleToggleWatchlist = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     updateWatchlist({
       movieId,
       watchlist: !isInWatchlist,
     });
   };
 
-  const handleToggleStashList = () => {
+  const handleToggleStashList = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     updateStashList(movieId);
   };
 

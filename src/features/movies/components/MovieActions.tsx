@@ -43,7 +43,10 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
   const isInStashList = stashListStatus?.item_present;
   const isInWatchlist = watchlistStatus?.watchlist;
 
-  const handleMoveToWatchlist = async () => {
+  const handleMoveToWatchlist = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation();
     setIsMoving(true);
     try {
       await moveToWatchlist(movieId, isInStashList || false);
@@ -52,7 +55,10 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     }
   };
 
-  const handleMoveToStashList = async () => {
+  const handleMoveToStashList = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation();
     setIsMoving(true);
     try {
       await moveToStashList(movieId);

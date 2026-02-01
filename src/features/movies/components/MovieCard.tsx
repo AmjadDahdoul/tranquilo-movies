@@ -8,6 +8,7 @@ import { MovieActions } from "./MovieActions";
 import { SearchMovieActions } from "./SearchMovieActions";
 import { ListType } from "@/routes/enum/ListType";
 import { useState, useEffect, useRef } from "react";
+import { MovieCardDetails } from "./MovieCardDetails";
 
 interface MovieCard {
   movie: TmdbListItem | TmdbWatchlistMovie | Movie;
@@ -17,6 +18,15 @@ export const MovieCard = (props: MovieCard) => {
   const { movie, listType } = props;
   const [isActive, setIsActive] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  const handleDetailsOpen = () => {
+    setIsDetailsOpen(true);
+  };
+
+  const handleDetailsClose = () => {
+    setIsDetailsOpen(false);
+  };
 
   const {
     id,
@@ -54,30 +64,41 @@ export const MovieCard = (props: MovieCard) => {
     setIsActive(!isActive);
   };
 
+  const handleMovieCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    handleDetailsOpen();
+  };
+
   return (
-    <div
-      ref={cardRef}
-      className="rounded-2xl border-2 overflow-hidden group hover:scale-110 duration-700 ease-in-out relative cursor-pointer"
-    >
-      <img
-        src={getPosterUrl(poster_path)}
-        alt={title}
-        onClick={handleClick}
-        className="sm:pointer-events-none"
-      />
+    <>
       <div
-        className={`${isActive ? "flex" : "hidden"} sm:hidden sm:group-hover:flex absolute bottom-0 bg-black/70 w-full h-full p-2 flex-col justify-end`}
+        ref={cardRef}
+        className="rounded-2xl border-2 overflow-hidden group hover:scale-110 duration-700 ease-in-out relative cursor-pointer"
+        onClick={handleMovieCardClick}
       >
-        <h1 className="text-white font-bold text-lg mb-2">{title}</h1>
-        <h2 className="text-yellow-400 font-semibold mb-4">
-          ⭐ {vote_average.toPrecision(2)}
-        </h2>
-        {(listType === ListType.STASHLIST ||
-          listType === ListType.WATCHLIST) && (
-          <MovieActions movieId={id} listType={listType} />
-        )}
-        {!listType && <SearchMovieActions movieId={id} />}
+        <img
+          src={getPosterUrl(poster_path)}
+          alt={title}
+          onClick={handleClick}
+          className="sm:pointer-events-none"
+        />
+        <div
+          className={`${isActive ? "flex" : "hidden"} sm:hidden sm:group-hover:flex absolute bottom-0 bg-black/70 w-full h-full p-2 flex-col justify-end`}
+        >
+          <h1 className="text-white font-bold text-lg mb-2">{title}</h1>
+          <h2 className="text-yellow-400 font-semibold mb-4">
+            ⭐ {vote_average.toPrecision(2)}
+          </h2>
+          {(listType === ListType.STASHLIST ||
+            listType === ListType.WATCHLIST) && (
+            <MovieActions movieId={id} listType={listType} />
+          )}
+          {!listType && <SearchMovieActions movieId={id} />}
+        </div>
       </div>
-    </div>
+      {isDetailsOpen && (
+        <MovieCardDetails movieId={id} onClose={handleDetailsClose} />
+      )}
+    </>
   );
 };

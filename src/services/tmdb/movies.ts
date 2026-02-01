@@ -8,6 +8,7 @@ import type {
   TmdbAddToWatchlistResponse,
   TmdbItemStatusResponse,
   TmdbListDetails,
+  TmdbMovieDetails,
   TmdbWatchlistMoviesResponse,
 } from "./types";
 
@@ -69,4 +70,7 @@ export const moviesApi = {
 
   getAccountStates: (movieId: number) =>
     tmdbClient<TmdbAccountStatesResponse>(`/movie/${movieId}/account_states`),
+
+  getMovieDetails: (movieId: number) =>
+    tmdbClient<TmdbMovieDetails>(tmdbEndpoints.movieDetails(movieId)),
 };
