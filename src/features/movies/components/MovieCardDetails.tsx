@@ -147,12 +147,14 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
                     <p>{formattedBudget}</p>
                   </div>
 
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">
-                      Revenue
-                    </h4>
-                    <p>{formattedRevenue}</p>
-                  </div>
+                  {!!revenue && (
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-1">
+                        Revenue
+                      </h4>
+                      <p>{formattedRevenue}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
