@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { Search, X, Film } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { useRef } from "react";
@@ -47,8 +47,10 @@ export const Navbar = () => {
       <Container>
         <div className="flex h-16 items-center gap-4">
           <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <Film
-              className="h-6 w-6 text-primary active:scale-125 duration-200 ease-in-out hover:animate-spin"
+            <img
+              src="/TRNQL.gif"
+              alt="Tranquilo"
+              className="h-10 w-10 lg:h-12 lg:w-12 text-primary active:scale-125 duration-200 ease-in-out"
               onClick={handleLogoClick}
             />
             <span className="hidden sm:block select-none hover:animate-pulse">
