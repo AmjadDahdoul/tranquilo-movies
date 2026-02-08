@@ -46,16 +46,28 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
     release_date,
     genres,
     tagline,
-    spoken_languages,
     status,
+    spoken_languages,
     original_language,
     budget,
+    revenue,
   } = data;
+
+  const formattedRunTime = () => {
+    if (!runtime) return null;
+
+    const hours = Math.floor(runtime / 60);
+    const minutes = runtime % 60;
+    return `${hours}h ${minutes}m`;
+  };
 
   const showOriginalTitle = original_title && original_title !== title;
 
   const formattedBudget =
     budget && budget > 0 ? `$${budget.toLocaleString()}` : null;
+
+  const formattedRevenue =
+    revenue && revenue > 0 ? `$${revenue.toLocaleString()}` : null;
 
   return (
     <div
@@ -104,9 +116,9 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
 
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span>
-                ⭐ {vote_average.toFixed(1)} ({vote_count})
+                ⭐ {vote_average.toFixed(1)} ({vote_count.toLocaleString()})
               </span>
-              <span>{runtime} min</span>
+              <span>{formattedRunTime()}</span>
               <span>{new Date(release_date).getFullYear()}</span>
               <span className="uppercase">{original_language}</span>
               <span>{status}</span>
@@ -125,11 +137,22 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
 
             <p className="leading-relaxed text-sm">{overview}</p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-muted-foreground pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 text-xs text-muted-foreground pt-4">
               {formattedBudget && (
-                <div>
-                  <h4 className="font-semibold text-foreground mb-1">Budget</h4>
-                  <p>{formattedBudget}</p>
+                <div className="gap-2 flex flex-col">
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">
+                      Budget
+                    </h4>
+                    <p>{formattedBudget}</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">
+                      Revenue
+                    </h4>
+                    <p>{formattedRevenue}</p>
+                  </div>
                 </div>
               )}
 
