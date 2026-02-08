@@ -33,6 +33,14 @@ export function useAddToWatchedList() {
       queryClient.invalidateQueries({
         queryKey: [ListType.STASHLIST, ENV.STASH_LIST_ID],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["watchlist-status", movieId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["item-status", ENV.STASH_LIST_ID, movieId],
+      });
+
       queryClient.invalidateQueries({
         queryKey: ["watchlist-status"],
       });
