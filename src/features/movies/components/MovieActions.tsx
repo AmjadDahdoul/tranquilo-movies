@@ -67,6 +67,11 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     }
   };
 
+  const handleMarkAsWatched = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    addToWatchedList(movieId);
+  };
+
   return (
     <TooltipProvider delayDuration={150}>
       <div className="flex items-center gap-2">
@@ -77,7 +82,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                 <Button
                   size="icon"
                   variant="default"
-                  onClick={() => addToWatchedList(movieId)}
+                  onClick={handleMarkAsWatched}
                   disabled={addToWatchedPending}
                   aria-label="Mark as watched"
                 >
@@ -139,9 +144,10 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                 <Button
                   size="icon"
                   variant="default"
-                  onClick={() => addToWatchedList(movieId)}
+                  onClick={handleMarkAsWatched}
                   disabled={addToWatchedPending}
                   aria-label="Mark as watched"
+                  className="cursor-pointer"
                 >
                   {addToWatchedPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -161,6 +167,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                     onClick={handleMoveToStashList}
                     disabled={isMoving || watchlistPending}
                     aria-label="Move to stash"
+                    className="cursor-pointer"
                   >
                     {isMoving ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -181,6 +188,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                   onClick={() => updateWatchlist({ movieId, watchlist: false })}
                   disabled={watchlistPending}
                   aria-label="Remove from watchlist"
+                  className="cursor-pointer"
                 >
                   {watchlistPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

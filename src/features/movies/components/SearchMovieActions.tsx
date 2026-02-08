@@ -59,6 +59,7 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
               onClick={handleToggleWatchlist}
               disabled={watchlistPending}
               aria-label="Add to watchlist"
+              className="cursor-pointer"
             >
               {watchlistPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -86,6 +87,7 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
               onClick={handleToggleStashList}
               disabled={addStashPending}
               aria-label="Add to stash"
+              className="cursor-pointer"
             >
               {addStashPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
