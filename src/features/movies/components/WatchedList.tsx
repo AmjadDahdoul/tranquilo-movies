@@ -108,7 +108,7 @@ export const WatchedList = () => {
       </button>
 
       {totalCount > 0 && !isCollapsed && (
-        <div className="flex gap-2 mb-5 flex-wrap">
+        <div className="flex gap-2 mb-5 flex-wrap items-center justify-center">
           <div className="bg-card border border-border rounded-lg px-4 py-2 text-center min-w-[80px]">
             <p className="font-mono text-lg font-bold leading-none">
               {totalCount}

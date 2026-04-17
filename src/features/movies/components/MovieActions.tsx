@@ -21,6 +21,7 @@ import {
 interface MovieActionsProps {
   movieId: number;
   listType: string;
+  showLabels?: boolean;
 }
 
 const ActionBtn = ({
@@ -29,12 +30,14 @@ const ActionBtn = ({
   className,
   label,
   children,
+  showLabel,
 }: {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   className: string;
   label: string;
   children: React.ReactNode;
+  showLabel?: boolean;
 }) => (
   <Tooltip delayDuration={300}>
     <TooltipTrigger asChild>
@@ -42,16 +45,29 @@ const ActionBtn = ({
         onClick={onClick}
         disabled={disabled}
         aria-label={label}
-        className={`h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${className}`}
+        className={
+          showLabel
+            ? `h-7 w-7 sm:h-auto sm:w-full sm:px-2.5 sm:py-1 rounded-full border flex items-center justify-center sm:justify-start sm:gap-1.5 cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${className}`
+            : `h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${className}`
+        }
       >
         {children}
+        {showLabel && (
+          <span className="hidden sm:inline text-[11px] font-medium leading-none whitespace-nowrap">
+            {label}
+          </span>
+        )}
       </button>
     </TooltipTrigger>
-    <TooltipContent>{label}</TooltipContent>
+    {!showLabel && <TooltipContent>{label}</TooltipContent>}
   </Tooltip>
 );
 
-export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
+export const MovieActions = ({
+  movieId,
+  listType,
+  showLabels,
+}: MovieActionsProps) => {
   const [isMoving, setIsMoving] = useState(false);
 
   const { data: stashListStatus } = useItemStatus(ENV.STASH_LIST_ID, movieId);
@@ -114,7 +130,13 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="flex items-center gap-1">
+      <div
+        className={
+          showLabels
+            ? "flex gap-1 sm:flex-col sm:gap-1.5"
+            : "flex items-center gap-1"
+        }
+      >
         {listType === ListType.STASHLIST && (
           <>
             <ActionBtn
@@ -122,6 +144,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
               disabled={addToWatchedPending}
               className="bg-success/10 text-success border-success/30"
               label="Mark as Watched"
+              showLabel={showLabels}
             >
               {spinnerOrIcon(addToWatchedPending, CircleCheck)}
             </ActionBtn>
@@ -131,6 +154,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                 disabled={isMoving || removeStashPending}
                 className="bg-primary/10 text-primary border-primary/30"
                 label="Move to Watchlist"
+                showLabel={showLabels}
               >
                 {spinnerOrIcon(isMoving, BookmarkPlus)}
               </ActionBtn>
@@ -143,6 +167,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
               disabled={removeStashPending}
               className="bg-destructive/10 text-destructive border-destructive/30"
               label="Remove from Stash"
+              showLabel={showLabels}
             >
               {spinnerOrIcon(removeStashPending, X)}
             </ActionBtn>
@@ -156,6 +181,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
               disabled={addToWatchedPending}
               className="bg-success/10 text-success border-success/30"
               label="Mark as Watched"
+              showLabel={showLabels}
             >
               {spinnerOrIcon(addToWatchedPending, CircleCheck)}
             </ActionBtn>
@@ -165,6 +191,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                 disabled={isMoving || watchlistPending}
                 className="bg-[color:var(--stash)]/10 text-[color:var(--stash)] border-[color:var(--stash)]/30"
                 label="Move to Stash"
+                showLabel={showLabels}
               >
                 {spinnerOrIcon(isMoving, Layers)}
               </ActionBtn>
@@ -177,6 +204,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
               disabled={watchlistPending}
               className="bg-destructive/10 text-destructive border-destructive/30"
               label="Remove from Watchlist"
+              showLabel={showLabels}
             >
               {spinnerOrIcon(watchlistPending, X)}
             </ActionBtn>
@@ -189,6 +217,7 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
             disabled={removePending}
             className="bg-destructive/10 text-destructive border-destructive/30"
             label="Remove from Watched"
+            showLabel={showLabels}
           >
             {spinnerOrIcon(removePending, X)}
           </ActionBtn>

@@ -15,9 +15,13 @@ import {
 
 interface SearchMovieActionsProps {
   movieId: number;
+  showLabels?: boolean;
 }
 
-export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
+export const SearchMovieActions = ({
+  movieId,
+  showLabels,
+}: SearchMovieActionsProps) => {
   const { data: stashListStatus } = useItemStatus(ENV.STASH_LIST_ID, movieId);
   const { data: watchlistStatus } = useWatchlistStatus(movieId);
 
@@ -42,18 +46,30 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
     updateStashList(movieId);
   };
 
+  const watchlistLabel = isInWatchlist
+    ? "Remove from Watchlist"
+    : "Add to Watchlist";
+  const stashLabel = isInStashList ? "Remove from Stash" : "Add to Stash";
+  const btnBase = showLabels
+    ? "h-7 w-7 sm:h-auto sm:w-full sm:px-2.5 sm:py-1 rounded-full border flex items-center justify-center sm:justify-start sm:gap-1.5 cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed"
+    : "h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed";
+
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="flex items-center gap-1">
+      <div
+        className={
+          showLabels
+            ? "flex gap-1 sm:flex-col sm:gap-1.5"
+            : "flex items-center gap-1"
+        }
+      >
         <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
             <button
               onClick={handleToggleWatchlist}
               disabled={watchlistPending}
-              aria-label={
-                isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"
-              }
-              className={`h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${
+              aria-label={watchlistLabel}
+              className={`${btnBase} ${
                 isInWatchlist
                   ? "bg-destructive/10 text-destructive border-destructive/30"
                   : "bg-primary/10 text-primary border-primary/30"
@@ -66,11 +82,14 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
               ) : (
                 <BookmarkPlus className="h-3 w-3" />
               )}
+              {showLabels && (
+                <span className="hidden sm:inline text-[11px] font-medium leading-none whitespace-nowrap">
+                  {watchlistLabel}
+                </span>
+              )}
             </button>
           </TooltipTrigger>
-          <TooltipContent>
-            {isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}
-          </TooltipContent>
+          {!showLabels && <TooltipContent>{watchlistLabel}</TooltipContent>}
         </Tooltip>
 
         <Tooltip delayDuration={300}>
@@ -78,8 +97,8 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
             <button
               onClick={handleToggleStashList}
               disabled={addStashPending}
-              aria-label={isInStashList ? "Remove from Stash" : "Add to Stash"}
-              className={`h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${
+              aria-label={stashLabel}
+              className={`${btnBase} ${
                 isInStashList
                   ? "bg-destructive/10 text-destructive border-destructive/30"
                   : "bg-[color:var(--stash)]/10 text-[color:var(--stash)] border-[color:var(--stash)]/30"
@@ -92,11 +111,14 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
               ) : (
                 <Layers className="h-3 w-3" />
               )}
+              {showLabels && (
+                <span className="hidden sm:inline text-[11px] font-medium leading-none whitespace-nowrap">
+                  {stashLabel}
+                </span>
+              )}
             </button>
           </TooltipTrigger>
-          <TooltipContent>
-            {isInStashList ? "Remove from Stash" : "Add to Stash"}
-          </TooltipContent>
+          {!showLabels && <TooltipContent>{stashLabel}</TooltipContent>}
         </Tooltip>
       </div>
     </TooltipProvider>

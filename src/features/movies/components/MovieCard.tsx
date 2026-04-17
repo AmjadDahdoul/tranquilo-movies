@@ -115,6 +115,7 @@ export const MovieCard = (props: MovieCard) => {
       {isDetailsOpen && (
         <MovieCardDetails
           movieId={id}
+          listType={listType}
           onClose={() => setIsDetailsOpen(false)}
         />
       )}

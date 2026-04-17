@@ -7,13 +7,13 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
 const LINKS = [
-  "https://youtu.be/aQkPcPqTq4M?si=hFlYn7SoWjDvb1TE",
-  "https://youtu.be/gQtKJbptcns?si=5602Ydu2OeJVP3fi",
-  "https://youtu.be/MPlkHxFA-Qg?si=ZtykX4rrnhxsVrAc",
-  "https://youtu.be/88sARuFu-tc?si=kNf42iBM3OxHTOih",
-  "https://youtu.be/Uj1AOKUPYTY?si=B_ED6bbBklaLHbLk",
-  "https://youtu.be/tD5oQQ-CQ4E?si=cN_8JVvPaxAMijhm",
-  "https://youtu.be/ho5YyCzRxS8?si=eS5iGoeWQbPZ_V4U",
+  "https://youtu.be/aQkPcPqTq4M?si=hFlYn7SoWjDvb1TE", // MACINTOSH PLUS - リサフランク420 / 現代のコンピュ
+  "https://youtu.be/gQtKJbptcns?si=5602Ydu2OeJVP3fi", // Rapp Snitch Knishes
+  "https://youtu.be/MPlkHxFA-Qg?si=ZtykX4rrnhxsVrAc", // Ludovico Einaudi – Una Mattina
+  "https://youtu.be/88sARuFu-tc?si=kNf42iBM3OxHTOih", // Bronski Beat - Smalltown Boy
+  "https://youtu.be/Uj1AOKUPYTY?si=B_ED6bbBklaLHbLk", // Angus and Julia Stone - I'm Not Yours
+  "https://youtu.be/tD5oQQ-CQ4E?si=cN_8JVvPaxAMijhm", // Hailie's Song · Eminem
+  "https://youtu.be/ho5YyCzRxS8?si=eS5iGoeWQbPZ_V4U", // System Of A Down - Toxicity
 ] as const;
 
 export const Navbar = () => {
@@ -61,10 +61,11 @@ export const Navbar = () => {
               />
               <div className="hidden sm:flex flex-col">
                 <span className="font-mono font-semibold text-xs tracking-widest uppercase text-primary leading-none select-none">
-                  Tranquilo
-                </span>
-                <span className="text-[10px] text-muted-foreground leading-tight select-none">
-                  <LayoutTextFlip text="Movies" words={words} duration={2500} />
+                  <LayoutTextFlip
+                    text="Tranquilo"
+                    words={words}
+                    duration={2500}
+                  />
                 </span>
               </div>
             </div>

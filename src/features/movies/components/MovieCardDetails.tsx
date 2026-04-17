@@ -2,13 +2,21 @@ import { getPosterUrl } from "@/services/tmdb/utils";
 import { useMovieDetails } from "../hooks/useMovieDetails";
 import { useEffect } from "react";
 import { Loader2, X } from "lucide-react";
+import { MovieActions } from "./MovieActions";
+import { SearchMovieActions } from "./SearchMovieActions";
+import { ListType } from "@/routes/enum/ListType";
 
 interface MovieCardDetailsProps {
   movieId: number;
+  listType?: string;
   onClose: () => void;
 }
 
-export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
+export function MovieCardDetails({
+  movieId,
+  listType,
+  onClose,
+}: MovieCardDetailsProps) {
   const { data, isLoading, isError } = useMovieDetails(movieId);
 
   useEffect(() => {
@@ -90,16 +98,16 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
       onClick={onClose}
     >
       <div
-        className="relative max-w-2xl w-full max-h-[88vh] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_32px_80px_rgba(0,0,0,0.8)] flex flex-col"
+        className="relative w-full max-w-2xl sm:max-w-[60vw] max-h-[95vh] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_32px_80px_rgba(0,0,0,0.8)] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Backdrop strip */}
-        <div className="h-40 relative overflow-hidden flex-shrink-0">
+        <div className="h-14 sm:h-56 lg:h-110 relative overflow-hidden flex-shrink-0">
           {backdrop_path ? (
             <img
               src={getPosterUrl(backdrop_path, "original")}
               alt=""
-              className="w-full h-full object-cover opacity-60"
+              className="w-full h-full object-cover opacity-80"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-background" />
@@ -116,22 +124,27 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
           </button>
         </div>
 
-        {/* Body — overlaps backdrop by 52px */}
-        <div
-          className="flex gap-4 px-5 pb-5 overflow-y-auto"
-          style={{ marginTop: "-52px" }}
-        >
-          {/* Poster */}
-          {poster_path && (
-            <img
-              src={getPosterUrl(poster_path, "w300")}
-              alt={title}
-              className="w-20 aspect-[2/3] rounded-lg border-2 border-border shadow-lg flex-shrink-0 self-start object-cover"
-            />
-          )}
+        {/* Body — overlaps backdrop on sm+, flush on mobile */}
+        <div className="relative z-10 flex gap-4 px-5 pb-5 overflow-y-auto sm:-mt-[52px]">
+          {/* Left column: poster + actions */}
+          <div className="flex flex-col gap-3 flex-shrink-0 sm:pt-14">
+            {poster_path && (
+              <img
+                src={getPosterUrl(poster_path, "w300")}
+                alt={title}
+                className="w-28 aspect-[2/3] rounded-lg border-2 border-border shadow-lg object-cover"
+              />
+            )}
+            {(listType === ListType.STASHLIST ||
+              listType === ListType.WATCHLIST ||
+              listType === ListType.WATCHEDLIST) && (
+              <MovieActions movieId={movieId} listType={listType} />
+            )}
+            {!listType && <SearchMovieActions movieId={movieId} />}
+          </div>
 
           {/* Info */}
-          <div className="flex flex-col gap-2 min-w-0 flex-1 pt-14">
+          <div className="flex flex-col gap-2 min-w-0 flex-1 pt-0 sm:pt-14">
             <div>
               <h2 className="text-xl font-bold tracking-tight leading-tight">
                 {title}
