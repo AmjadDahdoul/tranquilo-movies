@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { BookmarkPlus, FolderPlus, Trash2, Loader2, Check } from "lucide-react";
-
+import { BookmarkPlus, Layers, Loader2, CircleCheck, X } from "lucide-react";
 import { useAddToWatchlist } from "../hooks/useAddToWatchlist";
 import { useUpdateList } from "../hooks/useAddMovieToList";
 import { useItemStatus } from "../hooks/useItemStatus";
@@ -12,7 +11,6 @@ import { canRemoveWatched } from "../hooks/watchedTimestamps";
 import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +23,34 @@ interface MovieActionsProps {
   listType: string;
 }
 
+const ActionBtn = ({
+  onClick,
+  disabled,
+  className,
+  label,
+  children,
+}: {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  className: string;
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <Tooltip delayDuration={300}>
+    <TooltipTrigger asChild>
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={label}
+        className={`h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${className}`}
+      >
+        {children}
+      </button>
+    </TooltipTrigger>
+    <TooltipContent>{label}</TooltipContent>
+  </Tooltip>
+);
+
 export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
   const [isMoving, setIsMoving] = useState(false);
 
@@ -33,15 +59,11 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
 
   const { mutate: updateWatchlist, isPending: watchlistPending } =
     useAddToWatchlist();
-
   const { moveToWatchlist, moveToStashList } = useMoveMovie();
-
   const { mutate: removeFromStashList, isPending: removeStashPending } =
     useUpdateList(ENV.STASH_LIST_ID, ActionType.REMOVE, ListType.STASHLIST);
-
   const { mutate: addToWatchedList, isPending: addToWatchedPending } =
     useAddToWatchedList();
-
   const { mutate: removeFromWatchedList, isPending: removePending } =
     useRemoveFromWatchedList();
 
@@ -83,160 +105,93 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
     removeFromWatchedList(movieId);
   };
 
+  const spinnerOrIcon = (pending: boolean, Icon: React.ElementType) =>
+    pending ? (
+      <Loader2 className="h-3 w-3 animate-spin" />
+    ) : (
+      <Icon className="h-3 w-3" />
+    );
+
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         {listType === ListType.STASHLIST && (
           <>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="default"
-                  onClick={handleMarkAsWatched}
-                  disabled={addToWatchedPending}
-                  aria-label="Mark as watched"
-                >
-                  {addToWatchedPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Check className="h-4 w-4" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Mark as Watched</TooltipContent>
-            </Tooltip>
+            <ActionBtn
+              onClick={handleMarkAsWatched}
+              disabled={addToWatchedPending}
+              className="bg-success/10 text-success border-success/30"
+              label="Mark as Watched"
+            >
+              {spinnerOrIcon(addToWatchedPending, CircleCheck)}
+            </ActionBtn>
             {!isInWatchlist && (
-              <Tooltip delayDuration={300}>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    onClick={handleMoveToWatchlist}
-                    disabled={isMoving || removeStashPending}
-                    aria-label="Move to watchlist"
-                  >
-                    {isMoving ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <BookmarkPlus className="h-4 w-4" />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Move to Watchlist</TooltipContent>
-              </Tooltip>
+              <ActionBtn
+                onClick={handleMoveToWatchlist}
+                disabled={isMoving || removeStashPending}
+                className="bg-primary/10 text-primary border-primary/30"
+                label="Move to Watchlist"
+              >
+                {spinnerOrIcon(isMoving, BookmarkPlus)}
+              </ActionBtn>
             )}
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFromStashList(movieId);
-                  }}
-                  disabled={removeStashPending}
-                  aria-label="Remove from stash"
-                >
-                  {removeStashPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Remove from Stash</TooltipContent>
-            </Tooltip>
+            <ActionBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                removeFromStashList(movieId);
+              }}
+              disabled={removeStashPending}
+              className="bg-destructive/10 text-destructive border-destructive/30"
+              label="Remove from Stash"
+            >
+              {spinnerOrIcon(removeStashPending, X)}
+            </ActionBtn>
           </>
         )}
 
         {listType === ListType.WATCHLIST && (
           <>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="default"
-                  onClick={handleMarkAsWatched}
-                  disabled={addToWatchedPending}
-                  aria-label="Mark as watched"
-                  className="cursor-pointer"
-                >
-                  {addToWatchedPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Check className="h-4 w-4" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Mark as Watched</TooltipContent>
-            </Tooltip>
+            <ActionBtn
+              onClick={handleMarkAsWatched}
+              disabled={addToWatchedPending}
+              className="bg-success/10 text-success border-success/30"
+              label="Mark as Watched"
+            >
+              {spinnerOrIcon(addToWatchedPending, CircleCheck)}
+            </ActionBtn>
             {!isInStashList && (
-              <Tooltip delayDuration={300}>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    onClick={handleMoveToStashList}
-                    disabled={isMoving || watchlistPending}
-                    aria-label="Move to stash"
-                    className="cursor-pointer"
-                  >
-                    {isMoving ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <FolderPlus className="h-4 w-4" />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Move to Stash</TooltipContent>
-              </Tooltip>
+              <ActionBtn
+                onClick={handleMoveToStashList}
+                disabled={isMoving || watchlistPending}
+                className="bg-[color:var(--stash)]/10 text-[color:var(--stash)] border-[color:var(--stash)]/30"
+                label="Move to Stash"
+              >
+                {spinnerOrIcon(isMoving, Layers)}
+              </ActionBtn>
             )}
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    updateWatchlist({ movieId, watchlist: false });
-                  }}
-                  disabled={watchlistPending}
-                  aria-label="Remove from watchlist"
-                  className="cursor-pointer"
-                >
-                  {watchlistPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Remove from Watchlist</TooltipContent>
-            </Tooltip>
+            <ActionBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                updateWatchlist({ movieId, watchlist: false });
+              }}
+              disabled={watchlistPending}
+              className="bg-destructive/10 text-destructive border-destructive/30"
+              label="Remove from Watchlist"
+            >
+              {spinnerOrIcon(watchlistPending, X)}
+            </ActionBtn>
           </>
         )}
 
         {listType === ListType.WATCHEDLIST && canRemove && (
-          <Tooltip delayDuration={300}>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="destructive"
-                onClick={handleRemoveFromWatched}
-                disabled={removePending}
-                aria-label="Remove from watched"
-                className="cursor-pointer"
-              >
-                {removePending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Trash2 className="h-4 w-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Remove from Watched</TooltipContent>
-          </Tooltip>
+          <ActionBtn
+            onClick={handleRemoveFromWatched}
+            disabled={removePending}
+            className="bg-destructive/10 text-destructive border-destructive/30"
+            label="Remove from Watched"
+          >
+            {spinnerOrIcon(removePending, X)}
+          </ActionBtn>
         )}
       </div>
     </TooltipProvider>

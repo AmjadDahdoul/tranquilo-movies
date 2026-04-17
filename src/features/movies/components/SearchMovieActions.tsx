@@ -1,5 +1,4 @@
-import { BookmarkPlus, FolderPlus, Loader2, Trash2 } from "lucide-react";
-
+import { BookmarkPlus, Layers, Loader2, BookmarkX, X } from "lucide-react";
 import { useAddToWatchlist } from "../hooks/useAddToWatchlist";
 import { useUpdateList } from "../hooks/useAddMovieToList";
 import { useItemStatus } from "../hooks/useItemStatus";
@@ -7,7 +6,6 @@ import { useWatchlistStatus } from "../hooks/useWatchlistStatus";
 import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -28,7 +26,6 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
 
   const { mutate: updateWatchlist, isPending: watchlistPending } =
     useAddToWatchlist();
-
   const { mutate: updateStashList, isPending: addStashPending } = useUpdateList(
     ENV.STASH_LIST_ID,
     !isInStashList ? ActionType.ADD : ActionType.REMOVE,
@@ -37,10 +34,7 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
 
   const handleToggleWatchlist = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    updateWatchlist({
-      movieId,
-      watchlist: !isInWatchlist,
-    });
+    updateWatchlist({ movieId, watchlist: !isInWatchlist });
   };
 
   const handleToggleStashList = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -50,60 +44,58 @@ export const SearchMovieActions = ({ movieId }: SearchMovieActionsProps) => {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center gap-1">
         <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              variant={!isInWatchlist ? "default" : "destructive"}
+            <button
               onClick={handleToggleWatchlist}
               disabled={watchlistPending}
-              aria-label="Add to watchlist"
-              className="cursor-pointer"
+              aria-label={
+                isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"
+              }
+              className={`h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${
+                isInWatchlist
+                  ? "bg-destructive/10 text-destructive border-destructive/30"
+                  : "bg-primary/10 text-primary border-primary/30"
+              }`}
             >
               {watchlistPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : isInWatchlist ? (
+                <BookmarkX className="h-3 w-3" />
               ) : (
-                <>
-                  {!isInWatchlist ? (
-                    <BookmarkPlus className="h-4 w-4" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </>
+                <BookmarkPlus className="h-3 w-3" />
               )}
-            </Button>
+            </button>
           </TooltipTrigger>
           <TooltipContent>
-            {!isInWatchlist ? "Add to Watchlist" : "Remove from Watchlist"}
+            {isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}
           </TooltipContent>
         </Tooltip>
 
         <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              variant={!isInStashList ? "secondary" : "destructive"}
+            <button
               onClick={handleToggleStashList}
               disabled={addStashPending}
-              aria-label="Add to stash"
-              className="cursor-pointer"
+              aria-label={isInStashList ? "Remove from Stash" : "Add to Stash"}
+              className={`h-[26px] flex-1 rounded-[5px] border flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed ${
+                isInStashList
+                  ? "bg-destructive/10 text-destructive border-destructive/30"
+                  : "bg-[color:var(--stash)]/10 text-[color:var(--stash)] border-[color:var(--stash)]/30"
+              }`}
             >
               {addStashPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : isInStashList ? (
+                <X className="h-3 w-3" />
               ) : (
-                <>
-                  {!isInStashList ? (
-                    <FolderPlus className="h-4 w-4" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </>
+                <Layers className="h-3 w-3" />
               )}
-            </Button>
+            </button>
           </TooltipTrigger>
           <TooltipContent>
-            {!isInStashList ? "Add to Stash" : "Remove from Stash"}
+            {isInStashList ? "Remove from Stash" : "Add to Stash"}
           </TooltipContent>
         </Tooltip>
       </div>
