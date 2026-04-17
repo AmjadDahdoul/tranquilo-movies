@@ -1,6 +1,7 @@
 import { getPosterUrl } from "@/services/tmdb/utils";
 import { useMovieDetails } from "../hooks/useMovieDetails";
 import { useEffect } from "react";
+import { X } from "lucide-react";
 
 interface MovieCardDetailsProps {
   movieId: number;
@@ -10,14 +11,11 @@ interface MovieCardDetailsProps {
 export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
   const { data, isLoading } = useMovieDetails(movieId);
 
-  // prevent scroll when modal is open -- TODO: check if there is a better way to do this
   useEffect(() => {
     const scrollbarWidth =
       window.innerWidth - document.documentElement.clientWidth;
-
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${scrollbarWidth}px`;
-
     return () => {
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
@@ -26,8 +24,8 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-        <div className="text-white text-lg">Loading…</div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+        <div className="text-muted-foreground text-sm">Loading…</div>
       </div>
     );
   }
@@ -53,127 +51,171 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
     revenue,
   } = data;
 
-  const formattedRunTime = () => {
-    if (!runtime) return null;
-
-    const hours = Math.floor(runtime / 60);
-    const minutes = runtime % 60;
-    return `${hours}h ${minutes}m`;
-  };
-
   const showOriginalTitle = original_title && original_title !== title;
+
+  const formattedRuntime = () => {
+    if (!runtime) return null;
+    const h = Math.floor(runtime / 60);
+    const m = runtime % 60;
+    return `${h}h ${m}m`;
+  };
 
   const formattedBudget =
     budget && budget > 0 ? `$${budget.toLocaleString()}` : null;
-
   const formattedRevenue =
     revenue && revenue > 0 ? `$${revenue.toLocaleString()}` : null;
+  const releaseYear = release_date
+    ? new Date(release_date).getFullYear()
+    : null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
       onClick={onClose}
     >
       <div
-        className="relative max-w-5xl w-full max-h-[85vh] overflow-hidden rounded-3xl border border-accent bg-background shadow-2xl"
+        className="relative max-w-2xl w-full max-h-[88vh] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_32px_80px_rgba(0,0,0,0.8)] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {backdrop_path && (
-          <div className="relative h-96 w-full">
+        {/* Backdrop strip */}
+        <div className="h-40 relative overflow-hidden flex-shrink-0">
+          {backdrop_path ? (
             <img
               src={getPosterUrl(backdrop_path, "original")}
               alt={title}
-              className="h-full w-full object-cover"
+              className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-background to-transparent" />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-secondary to-background" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-card" />
 
-        <div className="flex gap-6 p-6 overflow-y-auto max-h-[calc(85vh-14rem)]">
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/60 border border-border text-muted-foreground hover:text-foreground hover:bg-black/80 flex items-center justify-center cursor-pointer transition-colors"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+
+        {/* Body — overlaps backdrop by 52px */}
+        <div
+          className="flex gap-4 px-5 pb-5 overflow-y-auto"
+          style={{ marginTop: "-52px" }}
+        >
+          {/* Poster */}
           {poster_path && (
             <img
-              src={getPosterUrl(poster_path, "w500")}
+              src={getPosterUrl(poster_path, "w300")}
               alt={title}
-              className="hidden sm:block w-48 rounded-xl object-cover shadow-lg"
+              className="w-20 aspect-[2/3] rounded-lg border-2 border-border shadow-lg flex-shrink-0 self-start object-cover"
             />
           )}
 
-          <div className="flex flex-col gap-4">
+          {/* Info */}
+          <div className="flex flex-col gap-2 min-w-0 flex-1 pt-14">
             <div>
-              <h2 className="text-3xl font-bold">
-                {title}{" "}
+              <h2 className="text-xl font-bold tracking-tight leading-tight">
+                {title}
                 {showOriginalTitle && (
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm font-normal text-muted-foreground ml-1.5">
                     ({original_title})
                   </span>
                 )}
               </h2>
-
               {tagline && (
-                <p className="italic text-muted-foreground mt-1">{tagline}</p>
+                <p className="text-xs text-muted-foreground italic mt-0.5">
+                  {tagline}
+                </p>
               )}
             </div>
 
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              <span>
-                ⭐ {vote_average.toFixed(1)} ({vote_count.toLocaleString()})
+            {/* Meta chips */}
+            <div className="flex flex-wrap gap-1.5">
+              <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-yellow-400">
+                ★ {vote_average.toFixed(1)}
               </span>
-              <span>{formattedRunTime()}</span>
-              <span>{new Date(release_date).getFullYear()}</span>
-              <span className="uppercase">{original_language}</span>
-              <span>{status}</span>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {genres.map((g) => (
-                <span
-                  key={g.id}
-                  className="rounded-full bg-muted px-3 py-1 text-xs font-medium"
-                >
-                  {g.name}
+              <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground">
+                {vote_count.toLocaleString()} votes
+              </span>
+              {formattedRuntime() && (
+                <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground">
+                  {formattedRuntime()}
                 </span>
-              ))}
-            </div>
-
-            <p className="leading-relaxed text-sm">{overview}</p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 text-xs text-muted-foreground pt-4">
-              {formattedBudget && (
-                <div className="gap-2 flex flex-col">
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">
-                      Budget
-                    </h4>
-                    <p>{formattedBudget}</p>
-                  </div>
-
-                  {!!revenue && (
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-1">
-                        Revenue
-                      </h4>
-                      <p>{formattedRevenue}</p>
-                    </div>
-                  )}
-                </div>
               )}
-
-              <div>
-                <h4 className="font-semibold text-foreground mb-1">
-                  Languages
-                </h4>
-                <p>{spoken_languages.map((l) => l.english_name).join(", ")}</p>
-              </div>
+              {releaseYear && (
+                <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground">
+                  {releaseYear}
+                </span>
+              )}
+              <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground uppercase">
+                {original_language}
+              </span>
+              <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground">
+                {status}
+              </span>
             </div>
+
+            {/* Genre chips */}
+            {genres.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {genres.map((g) => (
+                  <span
+                    key={g.id}
+                    className="rounded-full bg-primary/10 border border-primary/25 text-primary text-[10px] px-2.5 py-0.5"
+                  >
+                    {g.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Overview */}
+            {overview && (
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                {overview}
+              </p>
+            )}
+
+            {/* Financials — compact */}
+            {(formattedBudget ||
+              formattedRevenue ||
+              spoken_languages.length > 0) && (
+              <div className="flex flex-wrap gap-4 border-t border-border pt-3">
+                {formattedBudget && (
+                  <div>
+                    <p className="text-[9px] uppercase tracking-wide text-muted-foreground">
+                      Budget
+                    </p>
+                    <p className="font-mono text-[11px] text-muted-foreground mt-0.5">
+                      {formattedBudget}
+                    </p>
+                  </div>
+                )}
+                {formattedRevenue && (
+                  <div>
+                    <p className="text-[9px] uppercase tracking-wide text-muted-foreground">
+                      Revenue
+                    </p>
+                    <p className="font-mono text-[11px] text-muted-foreground mt-0.5">
+                      {formattedRevenue}
+                    </p>
+                  </div>
+                )}
+                {spoken_languages.length > 0 && (
+                  <div>
+                    <p className="text-[9px] uppercase tracking-wide text-muted-foreground">
+                      Languages
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      {spoken_languages.map((l) => l.english_name).join(", ")}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 rounded-full bg-black/60 p-3 text-white hover:bg-black cursor-pointer hover:scale-110 duration-300 ease-in-out border-2"
-        >
-          ✕
-        </button>
       </div>
     </div>
   );
