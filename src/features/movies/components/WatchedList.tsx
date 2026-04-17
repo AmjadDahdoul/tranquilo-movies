@@ -114,7 +114,7 @@ export const WatchedList = () => {
               {totalCount}
             </p>
             <p className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">
-              Movies
+              {totalCount === 1 ? "Movie" : "Movies"}
             </p>
           </div>
           {avgRating && (
