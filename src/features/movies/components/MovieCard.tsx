@@ -9,21 +9,25 @@ import { SearchMovieActions } from "./SearchMovieActions";
 import { ListType } from "@/routes/enum/ListType";
 import { useState, useEffect, useRef } from "react";
 import { MovieCardDetails } from "./MovieCardDetails";
-import { Film } from "lucide-react";
+import { Check, Film } from "lucide-react";
 
 interface MovieCard {
   movie: TmdbListItem | TmdbWatchlistMovie | Movie;
   listType?: string;
+  isSelected?: boolean;
+  onToggleSelect?: (id: number) => void;
 }
 
 export const MovieCard = (props: MovieCard) => {
-  const { movie, listType } = props;
+  const { movie, listType, isSelected, onToggleSelect } = props;
   const [isActive, setIsActive] = useState(false);
   const [imgError, setImgError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const { id, title, vote_average, poster_path } = movie;
+  const lang = "original_language" in movie ? movie.original_language : null;
+  const showLang = lang && lang !== "en";
 
   const hasActions =
     listType === ListType.STASHLIST ||
@@ -52,17 +56,21 @@ export const MovieCard = (props: MovieCard) => {
 
   const handleMovieCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    setIsDetailsOpen(true);
+    if (onToggleSelect) {
+      onToggleSelect(id);
+    } else {
+      setIsDetailsOpen(true);
+    }
   };
 
   return (
     <>
       <div
         ref={cardRef}
-        className="rounded-lg overflow-hidden group relative cursor-pointer border border-border
-          hover:scale-[1.07] transition-all duration-[400ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
+        className={`rounded-lg overflow-hidden group relative cursor-pointer border transition-all duration-[400ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
+          hover:scale-[1.07] hover:z-10
           hover:shadow-[0_14px_36px_rgba(0,0,0,0.7),0_0_0_1px_hsl(var(--primary))]
-          hover:z-10"
+          ${isSelected ? "border-primary" : "border-border"}`}
         onClick={handleMovieCardClick}
       >
         {!imgError && poster_path ? (
@@ -86,7 +94,7 @@ export const MovieCard = (props: MovieCard) => {
         )}
 
         <div
-          className={`${isActive ? "flex" : "hidden"} sm:hidden sm:group-hover:flex
+          className={`${isActive && !onToggleSelect ? "flex" : "hidden"} sm:hidden ${onToggleSelect ? "" : "sm:group-hover:flex"}
             absolute bottom-0 left-0 right-0
             bg-gradient-to-t from-background/97 via-background/50 to-transparent
             w-full h-full p-3 flex-col justify-end`}
@@ -98,6 +106,11 @@ export const MovieCard = (props: MovieCard) => {
             <span className="font-mono text-[9px] text-yellow-400">
               ★ {vote_average.toPrecision(2)}
             </span>
+            {showLang && (
+              <span className="font-mono text-[8px] uppercase text-muted-foreground bg-background/60 border border-border/50 rounded px-1 py-0.5 leading-none">
+                {lang}
+              </span>
+            )}
           </div>
           {hasActions && (
             <>
@@ -110,6 +123,15 @@ export const MovieCard = (props: MovieCard) => {
             </>
           )}
         </div>
+
+        {isSelected && (
+          <div className="absolute inset-0 bg-primary/20 pointer-events-none" />
+        )}
+        {isSelected && (
+          <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center pointer-events-none">
+            <Check className="h-3 w-3 text-primary-foreground" />
+          </div>
+        )}
       </div>
 
       {isDetailsOpen && (

@@ -27,4 +27,6 @@ export const ENV = {
   ACCOUNT_ID: Number(
     required(import.meta.env.VITE_TMDB_ACCOUNT_ID, "VITE_TMDB_ACCOUNT_ID"),
   ),
+
+  POLL_PROXY_URL: import.meta.env.VITE_POLL_PROXY_URL as string | undefined,
 } as const;

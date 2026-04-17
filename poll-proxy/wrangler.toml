@@ -1,0 +1,8 @@
+name = "tranquilo-poll-proxy"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Deploy: wrangler deploy
+# Set secrets (never commit these):
+#   wrangler secret put DISCORD_BOT_TOKEN
+#   wrangler secret put DISCORD_CHANNEL_ID
