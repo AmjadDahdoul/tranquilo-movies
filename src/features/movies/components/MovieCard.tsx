@@ -50,6 +50,7 @@ export const MovieCard = (props: MovieCard) => {
   }, [isActive]);
 
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+    if (onToggleSelect) return;
     e.stopPropagation();
     setIsActive((prev) => !prev);
   };
