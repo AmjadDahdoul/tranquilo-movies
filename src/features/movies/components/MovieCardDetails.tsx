@@ -1,7 +1,7 @@
 import { getPosterUrl } from "@/services/tmdb/utils";
 import { useMovieDetails } from "../hooks/useMovieDetails";
 import { useEffect } from "react";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 interface MovieCardDetailsProps {
   movieId: number;
@@ -25,7 +25,7 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
-        <div className="text-muted-foreground text-sm">Loading…</div>
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -207,7 +207,7 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
                     <p className="text-[9px] uppercase tracking-wide text-muted-foreground">
                       Languages
                     </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                    <p className="font-mono text-[11px] text-muted-foreground mt-0.5">
                       {spoken_languages.map((l) => l.english_name).join(", ")}
                     </p>
                   </div>
