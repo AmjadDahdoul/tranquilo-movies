@@ -19,22 +19,28 @@ export const Watchlist = () => {
 
   if (isLoading)
     return (
-      <div className="my-8">
-        <h2 className="text-xl font-bold mb-4 pl-3 border-l-4 border-primary">
-          Watchlist
-        </h2>
+      <div className="my-7">
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="w-[3px] h-4 rounded-full bg-primary flex-shrink-0" />
+          <span className="text-sm font-semibold tracking-tight">
+            Watchlist
+          </span>
+        </div>
         <p className="text-muted-foreground text-sm py-6 text-center">
-          Loading...
+          Loading…
         </p>
       </div>
     );
 
   if (isError)
     return (
-      <div className="my-8">
-        <h2 className="text-xl font-bold mb-4 pl-3 border-l-4 border-primary">
-          Watchlist
-        </h2>
+      <div className="my-7">
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="w-[3px] h-4 rounded-full bg-primary flex-shrink-0" />
+          <span className="text-sm font-semibold tracking-tight">
+            Watchlist
+          </span>
+        </div>
         <p className="text-destructive text-sm py-6 text-center">
           Error loading watchlist.
         </p>
@@ -46,19 +52,22 @@ export const Watchlist = () => {
   const movieCount = movies.results.length;
 
   return (
-    <div className="my-8">
+    <div className="my-7">
       <button
         className="flex items-center justify-between w-full cursor-pointer mb-4 group"
         onClick={handleOnClick}
       >
-        <h2 className="text-xl font-bold pl-3 border-l-4 border-primary flex items-center gap-2">
-          Watchlist
-          <span className="text-sm font-normal text-muted-foreground">
-            ({movieCount})
+        <div className="flex items-center gap-2.5">
+          <div className="w-[3px] h-4 rounded-full bg-primary flex-shrink-0" />
+          <span className="text-sm font-semibold tracking-tight">
+            Watchlist
           </span>
-        </h2>
+          <span className="font-mono text-[10px] text-muted-foreground bg-card border border-border rounded-full px-2 py-0.5">
+            {movieCount}
+          </span>
+        </div>
         <ChevronDown
-          className={`h-5 w-5 text-muted-foreground transition-transform duration-200 group-hover:text-foreground ${isCollapsed ? "-rotate-90" : ""}`}
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:text-foreground ${isCollapsed ? "-rotate-90" : ""}`}
         />
       </button>
 
