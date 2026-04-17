@@ -7,6 +7,8 @@ import { useItemStatus } from "../hooks/useItemStatus";
 import { useWatchlistStatus } from "../hooks/useWatchlistStatus";
 import { useMoveMovie } from "../hooks/useMoveMovie";
 import { useAddToWatchedList } from "../hooks/useAddToWatchedList";
+import { useRemoveFromWatchedList } from "../hooks/useRemoveFromWatchedList";
+import { canRemoveWatched } from "../hooks/watchedTimestamps";
 import { ActionType } from "@/routes/enum/ActionType";
 import { ListType } from "@/routes/enum/ListType";
 import { ENV } from "@/config/env";
@@ -40,8 +42,12 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
   const { mutate: addToWatchedList, isPending: addToWatchedPending } =
     useAddToWatchedList();
 
+  const { mutate: removeFromWatchedList, isPending: removePending } =
+    useRemoveFromWatchedList();
+
   const isInStashList = stashListStatus?.item_present;
   const isInWatchlist = watchlistStatus?.watchlist;
+  const canRemove = canRemoveWatched(movieId);
 
   const handleMoveToWatchlist = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -70,6 +76,11 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
   const handleMarkAsWatched = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     addToWatchedList(movieId);
+  };
+
+  const handleRemoveFromWatched = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    removeFromWatchedList(movieId);
   };
 
   return (
@@ -115,13 +126,15 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                 <TooltipContent>Move to Watchlist</TooltipContent>
               </Tooltip>
             )}
-
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
                 <Button
                   size="icon"
                   variant="destructive"
-                  onClick={() => removeFromStashList(movieId)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFromStashList(movieId);
+                  }}
                   disabled={removeStashPending}
                   aria-label="Remove from stash"
                 >
@@ -179,13 +192,15 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
                 <TooltipContent>Move to Stash</TooltipContent>
               </Tooltip>
             )}
-
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
                 <Button
                   size="icon"
                   variant="destructive"
-                  onClick={() => updateWatchlist({ movieId, watchlist: false })}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateWatchlist({ movieId, watchlist: false });
+                  }}
                   disabled={watchlistPending}
                   aria-label="Remove from watchlist"
                   className="cursor-pointer"
@@ -200,6 +215,28 @@ export const MovieActions = ({ movieId, listType }: MovieActionsProps) => {
               <TooltipContent>Remove from Watchlist</TooltipContent>
             </Tooltip>
           </>
+        )}
+
+        {listType === ListType.WATCHEDLIST && canRemove && (
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="destructive"
+                onClick={handleRemoveFromWatched}
+                disabled={removePending}
+                aria-label="Remove from watched"
+                className="cursor-pointer"
+              >
+                {removePending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Remove from Watched</TooltipContent>
+          </Tooltip>
         )}
       </div>
     </TooltipProvider>
