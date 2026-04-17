@@ -1,20 +1,19 @@
 import { useSearchParams } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { useRef } from "react";
 import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
 const LINKS = [
-  "https://youtu.be/aQkPcPqTq4M?si=hFlYn7SoWjDvb1TE", // MACINTOSH PLUS - リサフランク420 / 現代のコンピュ
-  "https://youtu.be/gQtKJbptcns?si=5602Ydu2OeJVP3fi", // Rapp Snitch Knishes
-  "https://youtu.be/MPlkHxFA-Qg?si=ZtykX4rrnhxsVrAc", // Ludovico Einaudi – Una Mattina
-  "https://youtu.be/88sARuFu-tc?si=kNf42iBM3OxHTOih", // Bronski Beat - Smalltown Boy
-  "https://youtu.be/Uj1AOKUPYTY?si=B_ED6bbBklaLHbLk", // Angus and Julia Stone - I'm Not Yours
-  "https://youtu.be/tD5oQQ-CQ4E?si=cN_8JVvPaxAMijhm", // Hailie's Song · Eminem
-  "https://youtu.be/ho5YyCzRxS8?si=eS5iGoeWQbPZ_V4U", // System Of A Down - Toxicity
+  "https://youtu.be/aQkPcPqTq4M?si=hFlYn7SoWjDvb1TE",
+  "https://youtu.be/gQtKJbptcns?si=5602Ydu2OeJVP3fi",
+  "https://youtu.be/MPlkHxFA-Qg?si=ZtykX4rrnhxsVrAc",
+  "https://youtu.be/88sARuFu-tc?si=kNf42iBM3OxHTOih",
+  "https://youtu.be/Uj1AOKUPYTY?si=B_ED6bbBklaLHbLk",
+  "https://youtu.be/tD5oQQ-CQ4E?si=cN_8JVvPaxAMijhm",
+  "https://youtu.be/ho5YyCzRxS8?si=eS5iGoeWQbPZ_V4U",
 ] as const;
 
 export const Navbar = () => {
@@ -48,45 +47,45 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
         <Container>
-          <div className="flex h-16 items-center gap-4">
-            <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
+          <div className="flex h-14 items-center gap-4">
+            <div
+              className="flex items-center gap-2 cursor-pointer flex-shrink-0"
+              onClick={handleLogoClick}
+            >
               <img
                 src="/TRNQL.gif"
                 alt="Tranquilo"
-                className="h-10 w-10 lg:h-12 lg:w-12 text-primary active:scale-125 duration-200 ease-in-out"
-                onClick={handleLogoClick}
+                className="h-9 w-9 rounded-lg active:scale-125 duration-200 ease-in-out"
               />
-              <span className="hidden sm:block select-none hover:animate-pulse">
-                <LayoutTextFlip
-                  text="Tranquilo"
-                  words={words}
-                  duration={2500}
+              <div className="hidden sm:flex flex-col">
+                <span className="font-mono font-semibold text-xs tracking-widest uppercase text-primary leading-none select-none">
+                  Tranquilo
+                </span>
+                <span className="text-[10px] text-muted-foreground leading-tight select-none">
+                  <LayoutTextFlip text="Movies" words={words} duration={2500} />
+                </span>
+              </div>
+            </div>
+
+            <div className="flex-1 max-w-lg mx-auto">
+              <div className="relative">
+                <input
+                  className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  placeholder="Search movies…"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                 />
-              </span>
-            </div>
-
-            <div className="relative flex-1 max-w-lg mx-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                className="w-full rounded-xl border bg-background px-10 py-2 text-sm shadow-sm transition focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Search movies"
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchParams({}, { replace: true })}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground hover:bg-muted"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <ModeToggle />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchParams({}, { replace: true })}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </Container>
