@@ -15,6 +15,7 @@ interface MovieCard {
   movie: TmdbListItem | TmdbWatchlistMovie | Movie;
   listType?: string;
 }
+
 export const MovieCard = (props: MovieCard) => {
   const { movie, listType } = props;
   const [isActive, setIsActive] = useState(false);
@@ -22,20 +23,7 @@ export const MovieCard = (props: MovieCard) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  const {
-    id,
-    title,
-    vote_average,
-    poster_path,
-    // media_type,
-    // original_language,
-    // original_title,
-    // overview,
-    // vote_count,
-    // release_date,
-    // popularity,
-    // backdrop_path
-  } = movie;
+  const { id, title, vote_average, poster_path } = movie;
 
   const hasActions =
     listType === ListType.STASHLIST ||
@@ -43,18 +31,15 @@ export const MovieCard = (props: MovieCard) => {
     listType === ListType.WATCHEDLIST ||
     !listType;
 
-  // refactor or remove this
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
         setIsActive(false);
       }
     };
-
     if (isActive) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -74,7 +59,10 @@ export const MovieCard = (props: MovieCard) => {
     <>
       <div
         ref={cardRef}
-        className="rounded-xl overflow-hidden group hover:scale-110 duration-700 ease-in-out relative cursor-pointer shadow-md hover:shadow-xl transition-all"
+        className="rounded-lg overflow-hidden group relative cursor-pointer border border-border
+          hover:scale-[1.07] transition-all duration-[400ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
+          hover:shadow-[0_14px_36px_rgba(0,0,0,0.7),0_0_0_1px_hsl(var(--primary))]
+          hover:z-10"
         onClick={handleMovieCardClick}
       >
         {!imgError && poster_path ? (
@@ -88,23 +76,27 @@ export const MovieCard = (props: MovieCard) => {
         ) : (
           <div
             onClick={handleImageClick}
-            className="w-full aspect-[2/3] bg-muted flex flex-col items-center justify-center gap-2 sm:pointer-events-none"
+            className="w-full aspect-[2/3] bg-card flex flex-col items-center justify-center gap-2 sm:pointer-events-none"
           >
-            <Film className="h-10 w-10 text-muted-foreground/40" />
+            <Film className="h-8 w-8 text-muted-foreground/40" />
             <span className="text-muted-foreground/60 text-xs text-center px-2 line-clamp-2">
               {title}
             </span>
           </div>
         )}
+
         <div
-          className={`${isActive ? "flex" : "hidden"} sm:hidden sm:group-hover:flex absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent w-full h-full p-3 flex-col justify-end`}
+          className={`${isActive ? "flex" : "hidden"} sm:hidden sm:group-hover:flex
+            absolute bottom-0 left-0 right-0
+            bg-gradient-to-t from-background/97 via-background/50 to-transparent
+            w-full h-full p-3 flex-col justify-end`}
         >
-          <h1 className="text-white font-semibold text-sm leading-tight mb-1 line-clamp-2">
+          <h1 className="text-white font-semibold text-[10px] leading-tight mb-1 line-clamp-2">
             {title}
           </h1>
-          <div className="flex items-center justify-between mb-3">
-            <span className="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold px-2 py-0.5 rounded-full border border-yellow-500/30">
-              ⭐ {vote_average.toPrecision(2)}
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-mono text-[9px] text-yellow-400">
+              ★ {vote_average.toPrecision(2)}
             </span>
           </div>
           {hasActions && (
@@ -119,9 +111,11 @@ export const MovieCard = (props: MovieCard) => {
           )}
         </div>
       </div>
+
       {isDetailsOpen && (
         <MovieCardDetails
           movieId={id}
+          listType={listType}
           onClose={() => setIsDetailsOpen(false)}
         />
       )}

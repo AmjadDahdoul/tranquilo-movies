@@ -16,7 +16,7 @@ export function App() {
   const hasSearchQuery = !!searchQuery && searchQuery.trim().length > 0;
 
   return (
-    <ThemeProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="trnql-theme">
       <QueryClientProvider client={queryClient}>
         <Navbar />
 

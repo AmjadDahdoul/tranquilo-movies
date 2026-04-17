@@ -44,22 +44,24 @@ export const WatchedList = () => {
 
   if (isLoading)
     return (
-      <div className="my-8">
-        <h2 className="text-xl font-bold mb-4 pl-3 border-l-4 border-primary">
-          Watched Movies
-        </h2>
+      <div className="my-7">
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="w-[3px] h-4 rounded-full bg-primary flex-shrink-0" />
+          <span className="text-sm font-semibold tracking-tight">Watched</span>
+        </div>
         <p className="text-muted-foreground text-sm py-6 text-center">
-          Loading...
+          Loading…
         </p>
       </div>
     );
 
   if (isError)
     return (
-      <div className="my-8">
-        <h2 className="text-xl font-bold mb-4 pl-3 border-l-4 border-primary">
-          Watched Movies
-        </h2>
+      <div className="my-7">
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="w-[3px] h-4 rounded-full bg-primary flex-shrink-0" />
+          <span className="text-sm font-semibold tracking-tight">Watched</span>
+        </div>
         <p className="text-destructive text-sm py-6 text-center">
           Error loading watched movies.
         </p>
@@ -75,7 +77,7 @@ export const WatchedList = () => {
   const totalHours = Math.floor((totalCount * AVG_RUNTIME) / 60);
   const totalDays = Math.floor(totalHours / 24);
   const timeLabel =
-    totalDays > 0 ? `${totalHours}h (${totalDays} days)` : `${totalHours}h`;
+    totalDays > 0 ? `${totalHours}h (${totalDays}d)` : `${totalHours}h`;
 
   const avgRating =
     allMovies.length > 0
@@ -86,45 +88,52 @@ export const WatchedList = () => {
       : null;
 
   return (
-    <div className="my-8">
+    <div className="my-7">
       <button
         className="flex items-center justify-between w-full cursor-pointer mb-4 group"
         onClick={handleOnClick}
       >
-        <h2 className="text-xl font-bold pl-3 border-l-4 border-primary flex items-center gap-2">
-          Watched Movies
+        <div className="flex items-center gap-2.5">
+          <div className="w-[3px] h-4 rounded-full bg-primary flex-shrink-0" />
+          <span className="text-sm font-semibold tracking-tight">Watched</span>
           {totalCount > 0 && (
-            <span className="text-sm font-normal text-muted-foreground">
-              ({totalCount})
+            <span className="font-mono text-[10px] text-muted-foreground bg-card border border-border rounded-full px-2 py-0.5">
+              {totalCount}
             </span>
           )}
-        </h2>
+        </div>
         <ChevronDown
-          className={`h-5 w-5 text-muted-foreground transition-transform duration-200 group-hover:text-foreground ${isCollapsed ? "-rotate-90" : ""}`}
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:text-foreground ${isCollapsed ? "-rotate-90" : ""}`}
         />
       </button>
 
       {totalCount > 0 && !isCollapsed && (
-        <div className="flex justify-center gap-4 mb-6">
-          <div className="flex flex-col items-center gap-1 bg-muted/50 rounded-xl px-6 py-3 min-w-[100px]">
-            <span className="text-2xl font-bold">{totalCount}</span>
-            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+        <div className="flex gap-2 mb-5 flex-wrap items-center justify-center">
+          <div className="bg-card border border-border rounded-lg px-4 py-2 text-center min-w-[80px]">
+            <p className="font-mono text-lg font-bold leading-none">
+              {totalCount}
+            </p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">
               {totalCount === 1 ? "Movie" : "Movies"}
-            </span>
+            </p>
           </div>
           {avgRating && (
-            <div className="flex flex-col items-center gap-1 bg-muted/50 rounded-xl px-6 py-3 min-w-[100px]">
-              <span className="text-2xl font-bold">⭐ {avgRating}</span>
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+            <div className="bg-card border border-border rounded-lg px-4 py-2 text-center min-w-[80px]">
+              <p className="font-mono text-lg font-bold leading-none text-yellow-400">
+                ★ {avgRating}
+              </p>
+              <p className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">
                 Avg Rating
-              </span>
+              </p>
             </div>
           )}
-          <div className="flex flex-col items-center gap-1 bg-muted/50 rounded-xl px-6 py-3 min-w-[100px]">
-            <span className="text-2xl font-bold">{timeLabel}</span>
-            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+          <div className="bg-card border border-border rounded-lg px-4 py-2 text-center min-w-[80px]">
+            <p className="font-mono text-lg font-bold leading-none">
+              {timeLabel}
+            </p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">
               Watch Time
-            </span>
+            </p>
           </div>
         </div>
       )}
@@ -143,7 +152,7 @@ export const WatchedList = () => {
               />
               {isFetchingNextPage && (
                 <p className="text-muted-foreground text-sm py-6 text-center">
-                  Loading more...
+                  Loading more…
                 </p>
               )}
               {!hasNextPage && allMovies.length > 0 && (
