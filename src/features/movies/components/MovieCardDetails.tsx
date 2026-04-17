@@ -5,11 +5,11 @@ import { Loader2, X } from "lucide-react";
 
 interface MovieCardDetailsProps {
   movieId: number;
-  onClose?: () => void;
+  onClose: () => void;
 }
 
 export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
-  const { data, isLoading } = useMovieDetails(movieId);
+  const { data, isLoading, isError } = useMovieDetails(movieId);
 
   useEffect(() => {
     const scrollbarWidth =
@@ -22,6 +22,14 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
@@ -30,7 +38,18 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
     );
   }
 
-  if (!data) return null;
+  if (isError || !data) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+        onClick={onClose}
+      >
+        <p className="text-sm text-muted-foreground">
+          Failed to load movie details.
+        </p>
+      </div>
+    );
+  }
 
   const {
     backdrop_path,
@@ -53,12 +72,9 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
 
   const showOriginalTitle = original_title && original_title !== title;
 
-  const formattedRuntime = () => {
-    if (!runtime) return null;
-    const h = Math.floor(runtime / 60);
-    const m = runtime % 60;
-    return `${h}h ${m}m`;
-  };
+  const formattedRuntime = runtime
+    ? `${Math.floor(runtime / 60)}h ${runtime % 60}m`
+    : null;
 
   const formattedBudget =
     budget && budget > 0 ? `$${budget.toLocaleString()}` : null;
@@ -82,7 +98,7 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
           {backdrop_path ? (
             <img
               src={getPosterUrl(backdrop_path, "original")}
-              alt={title}
+              alt=""
               className="w-full h-full object-cover opacity-60"
             />
           ) : (
@@ -91,6 +107,8 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-card" />
 
           <button
+            type="button"
+            aria-label="Close"
             onClick={onClose}
             className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/60 border border-border text-muted-foreground hover:text-foreground hover:bg-black/80 flex items-center justify-center cursor-pointer transition-colors"
           >
@@ -138,9 +156,9 @@ export function MovieCardDetails({ movieId, onClose }: MovieCardDetailsProps) {
               <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground">
                 {vote_count.toLocaleString()} votes
               </span>
-              {formattedRuntime() && (
+              {formattedRuntime && (
                 <span className="font-mono text-[10px] bg-secondary border border-border rounded-md px-1.5 py-0.5 text-muted-foreground">
-                  {formattedRuntime()}
+                  {formattedRuntime}
                 </span>
               )}
               {releaseYear && (
