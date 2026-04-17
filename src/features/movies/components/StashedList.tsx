@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { ListType } from "@/routes/enum/ListType";
 import { useStachedMovies } from "../hooks/useStashListMovies";
 import { MoviesContainer } from "./MoviesContainer";
@@ -11,33 +12,32 @@ export const StashedList = () => {
   const { data, isLoading, isError } = useStachedMovies();
 
   const handleOnClick = () => {
-    const newCollapsedState = !isCollapsed;
-    setIsCollapsed(newCollapsedState);
-    localStorage.setItem(
-      "stashlist-collapsed",
-      JSON.stringify(newCollapsedState),
-    );
+    const next = !isCollapsed;
+    setIsCollapsed(next);
+    localStorage.setItem("stashlist-collapsed", JSON.stringify(next));
   };
 
   if (isLoading)
     return (
-      <div className="my-6">
-        <h2 className="text-2xl font-bold mb-4">Stash List</h2>
-        <div className="text-center py-8">
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-        </div>
+      <div className="my-8">
+        <h2 className="text-xl font-bold mb-4 pl-3 border-l-4 border-primary">
+          Stash List
+        </h2>
+        <p className="text-muted-foreground text-sm py-6 text-center">
+          Loading...
+        </p>
       </div>
     );
 
   if (isError)
     return (
-      <div className="my-6">
-        <h2 className="text-2xl font-bold mb-4">Stash List</h2>
-        <div className="text-center py-8">
-          <p className="text-red-600 dark:text-red-400">
-            Error loading stash list!
-          </p>
-        </div>
+      <div className="my-8">
+        <h2 className="text-xl font-bold mb-4 pl-3 border-l-4 border-primary">
+          Stash List
+        </h2>
+        <p className="text-destructive text-sm py-6 text-center">
+          Error loading stash list.
+        </p>
       </div>
     );
 
@@ -46,30 +46,35 @@ export const StashedList = () => {
   const movieCount = data.items.length;
 
   return (
-    <div className="my-6">
-      <div
-        className="flex items-center justify-between cursor-pointer mb-4"
+    <div className="my-8">
+      <button
+        className="flex items-center justify-between w-full cursor-pointer mb-4 group"
         onClick={handleOnClick}
       >
-        <h2 className="text-2xl font-bold">Stash List {`(${movieCount})`}</h2>
-        <span className="text-2xl select-none">{isCollapsed ? "▶" : "▼"}</span>
-      </div>
+        <h2 className="text-xl font-bold pl-3 border-l-4 border-primary flex items-center gap-2">
+          Stash List
+          <span className="text-sm font-normal text-muted-foreground">
+            ({movieCount})
+          </span>
+        </h2>
+        <ChevronDown
+          className={`h-5 w-5 text-muted-foreground transition-transform duration-200 group-hover:text-foreground ${isCollapsed ? "-rotate-90" : ""}`}
+        />
+      </button>
 
       {!isCollapsed && (
-        <div className="transition-all duration-300 ease-in-out">
+        <div>
           {movieCount === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-600 dark:text-gray-400">
-                Stash list is empty.
-              </p>
-            </div>
+            <p className="text-muted-foreground text-sm py-8 text-center">
+              Stash list is empty.
+            </p>
           ) : (
             <>
               <MoviesContainer
                 movies={data.items}
                 listType={ListType.STASHLIST}
               />
-              <div className="border-b-2 border-accent" />
+              <div className="border-b border-border mt-2" />
             </>
           )}
         </div>
